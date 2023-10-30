@@ -3,17 +3,23 @@ CFLAGS = -std=c++20
 TARGET_DIR = build
 TARGET = $(TARGET_DIR)\\ecs.exe
 LIB_FLAGS = -Ivendor/raylib/include -Lvendor/raylib/lib
-LINK_FLAGS = -lraylib -lopengl32 -lshell32 -lmsvcrt -luser32 -lgdi32 -lwinmm
 
 OBJECTS = Entry.o Application.o Logger.o Game.o GameObject.o SimpleEntity.o
 
 ifeq ($(OS),Windows_NT)
 	# Comandos para Windows (cmd)
 	MKDIR_BUILD =	@if not exist $(TARGET_DIR)\ (mkdir $(TARGET_DIR))
+	TARGET = $(TARGET_DIR)\\ecs.exe
+	LINK_FLAGS = -lraylib -lopengl32 -lshell32 -lmsvcrt -luser32 -lgdi32 -lwinmm
 else
 	UNAME_S := $(shell uname -s)
+	MKDIR_BUILD = if [ ! -d $(TARGET_DIR) ]; then mkdir -p $(TARGET_DIR); fi
+	TARGET = $(TARGET_DIR)/ecs
 	ifeq ($(UNAME_S),Linux)
-		MKDIR_BUILD = if [ ! -d $(TARGET_DIR) ]; then mkdir -p $(TARGET_DIR); fi
+		LINK_FLAGS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+	endif
+	ifeq ($(UNAME_S),Darwin)
+		LINK_FLAGS = -lraylib
 	endif
 endif
 
