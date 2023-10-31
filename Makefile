@@ -42,6 +42,7 @@ $(TARGET): $(RAYLIB_OBJS) $(OBJECTS)
 	$(CC) $(CFLAGS) -c -o $@ $< 
 
 $(RAYLIB_TARGET)/%.o: $(RAYLIB_DIR)/%.cpp
+	$(MKDIR_BUILD)
 	$(CC) -c -o $@ $<
 
 clean:
