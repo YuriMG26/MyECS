@@ -7,7 +7,8 @@ OOPGame::OOPGame(int argc, char* argv[], const char* title, int width,
       m_EntityNum(16) {
   parseArgs(argc, argv);
   Logger::log("Initializing game with %zu entities", m_EntityNum);
-  for (uint64_t i; i < m_EntityNum; ++i) {
+  for (uint64_t i = 0; i < m_EntityNum; ++i) {
+    Logger::log("Creating entity %d", i);
     m_Entities.push_back(SimpleEntity());
   }
 }
@@ -38,20 +39,23 @@ void OOPGame::draw() {
   ClearBackground(RAYWHITE);
 
   ImGui::Begin("Debug info");
-  ImGui::Text("Mousepos = (%f, %f)", GetMousePosition().x, GetMousePosition().y);
+  ImGui::Text("Mousepos = (%f, %f)", GetMousePosition().x,
+              GetMousePosition().y);
   int i = 0;
   for (SimpleEntity e : m_Entities) {
     e.draw();
     auto position = e.getPosition();
-    ImGui::Text("[%d] = %f %f", i, position.x, position.y);
+    auto velocity = e.getPhysics().velocity;
+    if (ImGui::TreeNode((void*)(intptr_t)i, "Entity [%d]", i)) {
+      ImGui::Text("Position: (%f, %f)", position.x, position.y);
+      ImGui::Text("Velocity: (%f, %f)", velocity.x, velocity.y);
+      ImGui::TreePop();
+    }
     ++i;
   }
   ImGui::End();
 
   DrawFPS(10, 10);
-
-  bool open = true;
-  ImGui::ShowDemoWindow(&open);
 
   rlImGuiEnd();
   EndDrawing();
