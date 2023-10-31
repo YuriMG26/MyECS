@@ -39,20 +39,7 @@ void OOPGame::draw() {
   for (SimpleEntity e : m_Entities) {
     e.draw();
   }
-
-  char text[256];
-  auto position = m_Entities[0].getPosition();
-  sprintf_s(text, 256, "%f %f", position.x, position.y);
-  DrawText(text, 10, 30, 20, RED);
-
-  auto physics = m_Entities[0].getPhysics();
-  sprintf_s(text, 256, "%f %f", physics.velocity.x, physics.velocity.y);
-  DrawText(text, 10, 65, 20, RED);
-
   DrawFPS(10, 10);
-
-  static bool open = true;
-  ImGui::ShowDemoWindow(&open);
 
   rlImGuiEnd();
   EndDrawing();
