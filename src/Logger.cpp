@@ -7,7 +7,7 @@ void log(const char *format, ...) {
   sprintf_s(buf, 128, LOG_GREEN "[LOG]:" LOG_RESET " %s\n", format);
 
   va_list args;
-  va_start(args, buf);
+  va_start(args, format);
   vprintf(buf, args);
   va_end(args);
 }
@@ -22,7 +22,7 @@ void memory(const char *format, ...) {
   sprintf_s(buf, 128, LOG_CYAN "[MEMORY]:" LOG_RESET " %s\n", format);
 
   va_list args;
-  va_start(args, buf);
+  va_start(args, format);
   vprintf(buf, args);
   va_end(args);
 }

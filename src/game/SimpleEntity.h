@@ -2,11 +2,11 @@
 
 #include <random>
 
-#include "../GameObject.h"
 #include "../components/PhysicsComponent.h"
 #include "../components/PositionComponent.h"
+#include "../oop/GameObject.h"
 
-class SimpleEntity {
+class SimpleEntity : public GameObject {
  public:
   SimpleEntity();
   ~SimpleEntity();

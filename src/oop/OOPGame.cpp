@@ -1,7 +1,7 @@
-#include "Game.h"
+#include "OOPGame.h"
 
-Game::Game(int argc, char* argv[], const char* title, int width, int height,
-           bool lock_framerate_to_screen, int target_fps)
+OOPGame::OOPGame(int argc, char* argv[], const char* title, int width,
+                 int height, bool lock_framerate_to_screen, int target_fps)
     : Application(argc, argv, title, width, height, lock_framerate_to_screen,
                   target_fps),
       m_EntityNum(16) {
@@ -12,16 +12,16 @@ Game::Game(int argc, char* argv[], const char* title, int width, int height,
   }
 }
 
-Game::~Game() {}
+OOPGame::~OOPGame() {}
 
-void Game::run() {
+void OOPGame::run() {
   while (not WindowShouldClose()) {
     this->update();
     this->draw();
   }
 }
 
-void Game::update() {
+void OOPGame::update() {
   this->m_Delta = GetFrameTime();
 
   for (SimpleEntity& e : m_Entities) {
@@ -29,7 +29,7 @@ void Game::update() {
   }
 }
 
-void Game::draw() {
+void OOPGame::draw() {
   BeginDrawing();
   ClearBackground(RAYWHITE);
 
@@ -50,7 +50,7 @@ void Game::draw() {
   EndDrawing();
 }
 
-void Game::parseArgs(int argc, char* argv[]) {
+void OOPGame::parseArgs(int argc, char* argv[]) {
   if (argc > 64) {
     Logger::error("Invalid number of arguments! (over 64)");
   }
