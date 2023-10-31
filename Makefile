@@ -1,8 +1,9 @@
 CC = clang++
-CFLAGS = -std=c++20 -Wno-implicit-exception-spec-mismatch
+STD_FLAGS = -std=c++17
+CFLAGS = $(STD_FLAGS) -Wno-implicit-exception-spec-mismatch
 TARGET_DIR = build
 TARGET = $(TARGET_DIR)\\ecs.exe
-LIB_FLAGS = -Ivendor/raylib/include -Lvendor/raylib/lib
+LIB_FLAGS = -Ivendor/raylib/include 
 SRC_DIR := src
 SRC_FILES := $(wildcard $(SRC_DIR)/**/*.cpp) $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS := $(patsubst %.cpp, %.o, $(wildcard $(SRC_DIR)/**/*.cpp) $(wildcard $(SRC_DIR)/*.cpp))
@@ -12,6 +13,7 @@ ifeq ($(OS),Windows_NT)
 	MKDIR_BUILD =	@if not exist $(TARGET_DIR)\ (mkdir $(TARGET_DIR))
 	TARGET = $(TARGET_DIR)\\ecs.exe
 	LINK_FLAGS = -lraylib -lopengl32 -lshell32 -lmsvcrt -luser32 -lgdi32 -lwinmm
+	LIB_FLAGS += -Lvendor/raylib/lib/windows
 	CLEAN_OBJ = @clean_obj.bat
 else
 	UNAME_S := $(shell uname -s)
@@ -19,9 +21,12 @@ else
 	TARGET = $(TARGET_DIR)/ecs
 	ifeq ($(UNAME_S),Linux)
 		LINK_FLAGS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+		LIB_FLAGS += -Lvendor/raylib/lib/linux
 	endif
 	ifeq ($(UNAME_S),Darwin)
+		# $(shell echo "Running on mac")
 		LINK_FLAGS = -lraylib
+		# LIB_FLAGS += -Lvendor/raylib/lib/mac
 	endif
 endif
 
@@ -39,11 +44,11 @@ $(TARGET): $(RAYLIB_OBJS) $(OBJECTS)
 
 %.o: %.cpp
 	$(MKDIR_BUILD)
-	$(CC) $(CFLAGS) -c -o $@ $< 
+	$(CC) $(STD_FLAGS) $(CFLAGS) -c -o $@ $< 
 
 $(RAYLIB_TARGET)/%.o: $(RAYLIB_DIR)/%.cpp
 	$(MKDIR_BUILD)
-	$(CC) -c -o $@ $<
+	$(CC) $(STD_FLAGS) -c -o $@ $<
 
 clean:
 	$(CLEAN_OBJ)
