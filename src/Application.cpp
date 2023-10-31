@@ -14,6 +14,8 @@ Application::Application(int argc, char* argv[], const char* title, int width,
 
   rlImGuiSetup(true);
 
+  ImGui::SetupImGuiStyle(false, 0.9f);
+
   Logger::log("Application created successfully!");
 }
 

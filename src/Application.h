@@ -12,6 +12,8 @@
 //
 #include "../vendor/raylib/include/imgui.h"
 #include "../vendor/raylib/include/rlImGui.h"
+//
+#include "../vendor/raylib/include/ImGuiUtils.h"
 #include "Logger.h"
 
 class Application {
