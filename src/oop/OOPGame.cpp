@@ -5,14 +5,15 @@ OOPGame::OOPGame(int argc, char* argv[], const char* title, int width,
     : Application(argc, argv, title, width, height, lock_framerate_to_screen,
                   target_fps),
       m_EntityNum(16) {
-  // TODO: Construct
   parseArgs(argc, argv);
   for (uint64_t i; i < m_EntityNum; ++i) {
     m_Entities.push_back(SimpleEntity());
   }
 }
 
-OOPGame::~OOPGame() {}
+OOPGame::~OOPGame() {
+  // NOTE: Don't call CloseWindow :p
+}
 
 void OOPGame::run() {
   while (not WindowShouldClose()) {
@@ -31,6 +32,8 @@ void OOPGame::update() {
 
 void OOPGame::draw() {
   BeginDrawing();
+  rlImGuiBegin();
+
   ClearBackground(RAYWHITE);
 
   for (SimpleEntity e : m_Entities) {
@@ -47,6 +50,11 @@ void OOPGame::draw() {
   DrawText(text, 10, 65, 20, RED);
 
   DrawFPS(10, 10);
+
+  static bool open = true;
+  ImGui::ShowDemoWindow(&open);
+
+  rlImGuiEnd();
   EndDrawing();
 }
 

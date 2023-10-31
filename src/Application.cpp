@@ -11,11 +11,15 @@ Application::Application(int argc, char* argv[], const char* title, int width,
     target_fps = GetMonitorRefreshRate(GetCurrentMonitor());
   }
   SetTargetFPS(target_fps);
+
+  rlImGuiSetup(true);
+
   Logger::log("Application created successfully!");
 }
 
 Application::~Application() {
   // TODO: Cleanup
+  rlImGuiShutdown();
   CloseWindow();
 }
 

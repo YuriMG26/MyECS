@@ -27,14 +27,21 @@ endif
 
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS)
+RAYLIB_DIR := vendor/raylib/include
+RAYLIB_SRC = $(wildcard $(RAYLIB_DIR)/*.cpp)
+RAYLIB_OBJS := $(patsubst $(RAYLIB_DIR)/%.cpp, %.o, $(wildcard $(RAYLIB_DIR)/*.cpp))
+
+$(TARGET): $(RAYLIB_OBJS) $(OBJECTS)
 	$(MKDIR_BUILD)
-	$(CC) $(CFLAGS) -o $@ $(OBJECTS) $(LIB_FLAGS) $(LINK_FLAGS)
+	$(CC) $(CFLAGS) -o $@ *.o $(OBJECTS) $(LIB_FLAGS) $(LINK_FLAGS)
 
 # Regra genérica para compilar arquivos .cpp em arquivos .o
 %.o: %.cpp
 	$(MKDIR_BUILD)
 	$(CC) $(CFLAGS) -c -o $@ $< 
+
+%.o: $(RAYLIB_DIR)/%.cpp
+	$(CC) -c $<
 
 clean:
 	$(CLEAN_OBJ)

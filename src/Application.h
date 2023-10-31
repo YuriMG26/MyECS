@@ -9,6 +9,9 @@
 #include <string_view>
 
 #include "../vendor/raylib/include/raylib.h"
+//
+#include "../vendor/raylib/include/imgui.h"
+#include "../vendor/raylib/include/rlImGui.h"
 #include "Logger.h"
 
 class Application {
