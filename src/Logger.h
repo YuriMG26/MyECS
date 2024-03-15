@@ -1,6 +1,5 @@
 #pragma once
 
-
 #define LOG_GREEN "\u001b[32m"
 #define LOG_RED "\u001b[31m"
 #define LOG_YELLOW "\u001b[33m"
@@ -11,7 +10,7 @@
 #include <stdio.h>
 
 #if _WIN32
-#define secure_sprintf(x) sprintf_s(x);
+#define secure_sprintf(...) sprintf_s(__VA_ARGS__);
 #else
 #define secure_sprintf(...) snprintf(__VA_ARGS__);
 #endif
