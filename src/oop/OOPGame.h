@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <sstream>
 
 #include "../Application.h"
@@ -16,8 +17,10 @@ class OOPGame : public Application {
  private:
   void update();
   void draw();
+  void draw_gui();
   void parseArgs(int argc, char* argv[]);
 
   std::vector<SimpleEntity> m_Entities;
-  uint64_t m_EntityNum;
+  std::size_t m_EntityNum;
+  std::size_t m_StarEntity;
 };

@@ -12,8 +12,7 @@ void operator delete(void *memory, size_t size) {
 }
 
 int main(int argc, char *argv[]) {
-  OOPGame *app =
-      new OOPGame(argc, argv, "Game sandbox", 800, 600, true);
+  OOPGame *app = new OOPGame(argc, argv, "Game sandbox", 1280, 720, true);
   app->run();
   delete app;
 }

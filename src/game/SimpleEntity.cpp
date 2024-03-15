@@ -44,7 +44,7 @@ void SimpleEntity::update(float delta) {
 }
 
 void SimpleEntity::draw() {
-  DrawRectangle(this->m_Position.x, this->m_Position.y, 20, 20, m_Color);
+  DrawRectangle(this->m_Position.x, this->m_Position.y, 3, 3, m_Color);
 }
 
 PositionComponent SimpleEntity::getPosition() const { return m_Position; }
@@ -58,4 +58,10 @@ PhysicsComponent SimpleEntity::getPhysics() const { return m_Physics; }
 
 void SimpleEntity::setVelocity(Vector2 newVelocity) {
   this->m_Physics.velocity = newVelocity;
+}
+
+OrbitalComponent SimpleEntity::getOrbital() const { return m_Orbital; }
+
+void SimpleEntity::setOrbital(OrbitalComponent newOrbital) {
+  this->m_Orbital = newOrbital;
 }

@@ -27,7 +27,8 @@ project "MyECS"
 
   includedirs
   {
-    "Vendor/raylib/include/"
+    "Vendor/raylib/include/",
+    "Vendor/entt/"
   }
 
   libdirs
