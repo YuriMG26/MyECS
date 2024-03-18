@@ -9,11 +9,14 @@
 
 class SimpleEntity : public GameObject {
  public:
-  SimpleEntity();
+  SimpleEntity(bool isStar);
   ~SimpleEntity();
 
   void update(float delta);
   void draw();
+
+  Color getColor(void) const { return m_Color; }
+  void setColor(Color newColor);
 
   PositionComponent getPosition() const;
   void setPosition(Vector2 newPosition);
@@ -43,4 +46,7 @@ class SimpleEntity : public GameObject {
 
   PositionComponent m_StarPosition;
   OrbitalComponent m_StarOrbital;
+
+  void makeStar();
+  void makePlanet();
 };

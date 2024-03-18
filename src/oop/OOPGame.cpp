@@ -10,12 +10,17 @@ OOPGame::OOPGame(int argc, char* argv[], const char* title, int width,
       m_EntityNum(16) {
   parseArgs(argc, argv);
   Logger::log("Initializing game with %zu entities", m_EntityNum);
+
+  // Creating star
+  Logger::log("Creating entity %d", 0);
+  m_Entities.push_back(SimpleEntity(true));
+
+  // Creating remainder entities
   for (std::size_t i = 0; i < m_EntityNum; ++i) {
     Logger::log("Creating entity %d", i);
-    m_Entities.push_back(SimpleEntity());
+    m_Entities.push_back(SimpleEntity(false));
   }
 
-  m_Entities.at(0).setEntityAsStar();
   m_StarEntity = 0;
 }
 

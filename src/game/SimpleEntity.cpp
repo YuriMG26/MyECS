@@ -1,31 +1,52 @@
 #include "SimpleEntity.h"
 
-SimpleEntity::SimpleEntity() {
+void SimpleEntity::makeStar() {
+  m_Color = {0, 255, 255, 255};
+  m_Position = {(float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2};
+  m_Physics.velocity = {0, 0};
+}
+
+void SimpleEntity::makePlanet() {
   std::random_device rd;
   std::mt19937_64 gen(rd());
 
+  Color color;
   std::uniform_int_distribution<unsigned int> r(0, 255);
-  m_Color.r = static_cast<unsigned char>(r(gen));
+  color.r = static_cast<unsigned char>(r(gen));
 
   std::uniform_int_distribution<unsigned int> g(0, 255);
-  m_Color.g = static_cast<unsigned char>(g(gen));
+  color.g = static_cast<unsigned char>(g(gen));
 
   std::uniform_int_distribution<unsigned int> b(0, 255);
-  m_Color.b = static_cast<unsigned char>(b(gen));
+  color.b = static_cast<unsigned char>(b(gen));
 
-  m_Color.a = 255;
+  color.a = 255;
 
+  Vector2 position;
   std::uniform_real_distribution<float> posx(
       0.0f, static_cast<float>(GetScreenWidth() - 20));
-  m_Position.x = posx(gen);
+  position.x = posx(gen);
 
   std::uniform_real_distribution<float> posy(
       0.0f, static_cast<float>(GetScreenHeight() - 20));
-  m_Position.y = posy(gen);
+  position.y = posy(gen);
 
+  PhysicsComponent physics;
   std::uniform_real_distribution<float> velx(-10.0f, +10.0f);
   std::uniform_real_distribution<float> vely(-10.0f, +10.0f);
-  m_Physics.velocity = {velx(gen), vely(gen)};
+  physics.velocity = {velx(gen), vely(gen)};
+
+  m_Position = {position.x, position.y};
+  m_Physics = physics;
+  m_Color = color;
+}
+
+SimpleEntity::SimpleEntity(bool isStar) {
+  if (isStar) {
+    makeStar();
+  } else {
+    makePlanet();
+  }
 }
 
 SimpleEntity::~SimpleEntity() {}

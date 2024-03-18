@@ -2,10 +2,13 @@
 !/**/
 !*.*
 .vscode/
+.vs/
 bin/
 bin-int/
 **/.DS_Store
 *.o
+*.vcxproj*
+*.sln
 *.exe
 *.ilk
 *.pdb
