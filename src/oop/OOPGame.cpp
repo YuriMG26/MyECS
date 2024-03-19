@@ -85,13 +85,22 @@ void OOPGame::draw_gui() {
   ImGui::Text("Mousepos = (%f, %f)", GetMousePosition().x,
               GetMousePosition().y);
   int i = 0;
-  for (SimpleEntity e : m_Entities) {
+  for (SimpleEntity& e : m_Entities) {
+    // TODO: move e.draw to a different place
     e.draw();
     auto position = e.getPosition();
     auto velocity = e.getPhysics().velocity;
     if (ImGui::TreeNode((void*)(intptr_t)i, "Entity [%d]", i)) {
       ImGui::Text("Position: (%f, %f)", position.x, position.y);
       ImGui::Text("Velocity: (%f, %f)", velocity.x, velocity.y);
+
+      float v[2] = {velocity.x, velocity.y};
+      ImGui::DragFloat2("Velocity", v);
+
+      OrbitalComponent orbital = e.getOrbital();
+      ImGui::DragFloat("Orbital mass", &orbital.mass);
+      e.setOrbital(orbital);
+
       ImGui::TreePop();
     }
     ++i;
