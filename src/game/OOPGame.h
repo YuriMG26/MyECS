@@ -4,7 +4,7 @@
 #include <sstream>
 
 #include "../Application.h"
-#include "../game/SimpleEntity.h"
+#include "SimpleEntity.h"
 
 class OOPGame : public Application {
  public:

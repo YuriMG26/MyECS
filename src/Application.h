@@ -36,5 +36,6 @@ class Application {
   int m_Width;
   int m_Height;
   std::string m_Title;
-  // std::array<bool, 1024> keys;
+
+  Camera2D m_Camera;
 };

@@ -15,6 +15,7 @@ project "MyECS"
   cppdialect "C++20"
   toolset "clang"
   kind "ConsoleApp"
+  symbols "On"
 
   targetdir("bin/" .. outputdir .. "/%{prj.name}")
   objdir("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -45,6 +46,7 @@ project "MyECS"
 
   filter "configurations:Debug"
     symbols "On"
+    linkoptions { '-g' }
 
   filter "configurations:Release"
     optimize "On"

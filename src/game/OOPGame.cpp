@@ -1,5 +1,6 @@
 #include "OOPGame.h"
 
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 
@@ -13,12 +14,15 @@ OOPGame::OOPGame(int argc, char* argv[], const char* title, int width,
 
   // Creating star
   Logger::log("Creating entity %d", 0);
-  m_Entities.push_back(SimpleEntity(true));
+  m_Entities.push_back(SimpleEntity("Star", true));
 
   // Creating remainder entities
   for (std::size_t i = 0; i < m_EntityNum; ++i) {
     Logger::log("Creating entity %d", i);
-    m_Entities.push_back(SimpleEntity(false));
+
+    char buffer[64];
+    secure_sprintf(buffer, 64, "Planet #%d", i);
+    m_Entities.push_back(SimpleEntity(buffer, false));
   }
 
   m_StarEntity = 0;
@@ -43,13 +47,34 @@ void OOPGame::update() {
     if (!e.isStar()) e.setStar(star.getPosition(), star.getOrbital());
     e.update(this->m_Delta);
   }
+
+  Vector2 mouseDelta = GetMouseDelta();
+
+  if (!ImGui::GetIO().WantCaptureMouse) {
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+      Vector2 cameraTargetGlobal =
+          GetWorldToScreen2D(m_Camera.target, m_Camera);
+      cameraTargetGlobal.x -= mouseDelta.x;
+      cameraTargetGlobal.y -= mouseDelta.y;
+      m_Camera.target = GetScreenToWorld2D(cameraTargetGlobal, m_Camera);
+    }
+    m_Camera.zoom += GetMouseWheelMove() * 0.1f;
+    m_Camera.zoom = Clamp(m_Camera.zoom, 0.1, 20.0);
+  }
 }
 
 void OOPGame::draw() {
   BeginDrawing();
+
   rlImGuiBegin();
 
   ClearBackground(RAYWHITE);
+
+  BeginMode2D(m_Camera);
+  for (SimpleEntity& e : m_Entities) {
+    e.draw();
+  }
+  EndMode2D();
 
   draw_gui();
   DrawFPS(10, 10);
@@ -74,6 +99,7 @@ void OOPGame::parseArgs(int argc, char* argv[]) {
         Logger::log("Cannot initalize game with %zu entities", entity_num);
         continue;
       }
+      m_EntityNum = entity_num;
       Logger::log("Successfully initializing game with %zu entities.",
                   m_EntityNum);
     }
@@ -84,13 +110,26 @@ void OOPGame::draw_gui() {
   ImGui::Begin("Debug info");
   ImGui::Text("Mousepos = (%f, %f)", GetMousePosition().x,
               GetMousePosition().y);
+
+  ImGui::Text("MouseDelta = (%f, %f)", GetMouseDelta().x, GetMouseDelta().y);
   int i = 0;
+
+  // CAMERA
+  if (ImGui::TreeNode("Camera")) {
+    ImGui::DragFloat("CameraZoom", &m_Camera.zoom);
+
+    float target[2] = {m_Camera.target.x, m_Camera.target.y};
+    ImGui::DragFloat2("CameraZoom", target);
+    m_Camera.target.x = target[0];
+    m_Camera.target.x = target[1];
+  }
+
   for (SimpleEntity& e : m_Entities) {
     // TODO: move e.draw to a different place
-    e.draw();
+    // e.draw();
     auto position = e.getPosition();
     auto velocity = e.getPhysics().velocity;
-    if (ImGui::TreeNode((void*)(intptr_t)i, "Entity [%d]", i)) {
+    if (ImGui::TreeNode((void*)(intptr_t)i, "%s", e.getName().c_str())) {
       ImGui::Text("Position: (%f, %f)", position.x, position.y);
       ImGui::Text("Velocity: (%f, %f)", velocity.x, velocity.y);
 

@@ -9,11 +9,13 @@
 
 class SimpleEntity : public GameObject {
  public:
-  SimpleEntity(bool isStar);
+  SimpleEntity(const std::string& name, bool isStar);
   ~SimpleEntity();
 
   void update(float delta);
   void draw();
+
+  const std::string& getName() const { return m_Name; }
 
   Color getColor(void) const { return m_Color; }
   void setColor(Color newColor);
@@ -38,6 +40,8 @@ class SimpleEntity : public GameObject {
   }
 
  private:
+  std::string m_Name;
+
   bool m_IsStar;
   Color m_Color;
   OrbitalComponent m_Orbital;

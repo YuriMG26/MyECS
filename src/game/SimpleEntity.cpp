@@ -45,7 +45,8 @@ void SimpleEntity::makePlanet() {
   m_Color = color;
 }
 
-SimpleEntity::SimpleEntity(bool isStar) {
+SimpleEntity::SimpleEntity(const std::string& name, bool isStar) {
+  m_Name = name;
   if (isStar) {
     makeStar();
   } else {
