@@ -26,6 +26,8 @@ Application::Application(int argc, char* argv[], const char* title, int width,
 
   m_Camera.zoom = 1.0f;
   m_Camera.offset = {(float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2};
+  m_Camera.target = {0};
+  m_Camera.rotation = 0;
 
   Logger::log("Application created successfully!");
 }

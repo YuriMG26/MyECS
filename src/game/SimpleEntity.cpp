@@ -1,5 +1,7 @@
 #include "SimpleEntity.h"
 
+#include <cstdint>
+
 void SimpleEntity::makeStar() {
   m_Color = {0, 255, 255, 255};
   m_Position = {(float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2};
@@ -34,8 +36,8 @@ void SimpleEntity::makePlanet() {
   position.y = posy(gen);
 
   PhysicsComponent physics;
-  std::uniform_real_distribution<float> velx(-10.0f, +10.0f);
-  std::uniform_real_distribution<float> vely(-10.0f, +10.0f);
+  std::uniform_real_distribution<float> velx(-40.0f, +40.0f);
+  std::uniform_real_distribution<float> vely(-40.0f, +40.0f);
   physics.velocity = {velx(gen), vely(gen)};
 
   m_IsStar = false;
@@ -58,33 +60,40 @@ SimpleEntity::~SimpleEntity() {}
 
 void SimpleEntity::update(float delta) {
   constexpr float gravitational = 6.6743e-11;
+
   if (!m_IsStar) {
-    if (m_Position.x > GetScreenWidth() || m_Position.x < 0)
+    m_GravityVector.x = m_StarPosition.x - m_Position.x;
+    m_GravityVector.y = m_StarPosition.y - m_Position.y;
+    float radius = Vector2Length(m_GravityVector) / 10;
+    m_GravityIntensity = (100 / (radius / 2)) / 10;
+    m_GravityIntensity = Clamp(m_GravityIntensity, -18.8, 18.8);
+    m_GravityVector =
+        Vector2Scale(Vector2Normalize(m_GravityVector), m_GravityIntensity);
+
+    if (m_Position.x >= GetScreenWidth()) {
+      m_Position.x = GetScreenWidth();
       m_Physics.velocity.x *= -1;
-    if (m_Position.y > GetScreenHeight() || m_Position.y < 0)
+    }
+    if (m_Position.x <= 0) {
+      m_Position.x = 0;
+      m_Physics.velocity.x *= -1;
+    }
+
+    if (m_Position.y >= GetScreenHeight()) {
+      m_Position.y = GetScreenHeight();
       m_Physics.velocity.y *= -1;
+    }
+    if (m_Position.y <= 0) {
+      m_Position.y = 0;
+      m_Physics.velocity.y *= -1;
+    }
 
-    float radius = Vector2Distance({m_Position.x, m_Position.y},
-                                   {m_StarPosition.x, m_StarPosition.y});
-    // float velocity = sqrt(2 * (gravitational * m_StarOrbital.mass) /
-    // distance); Vector2 m_PositionToAdd;
-    float starMass = m_StarOrbital.mass;
-    float thisMass = m_Orbital.mass;
+    Vector2 planetVelocity = {m_Physics.velocity.x, m_Physics.velocity.y};
 
-    float force = (gravitational * starMass * thisMass) / (radius * radius);
+    m_FinalVector = Vector2Add(planetVelocity, m_GravityVector);
 
-    Vector2 gravityVector = Vector2Subtract(
-        {m_StarPosition.x, m_StarPosition.y}, {m_Position.x, m_Position.y});
-    gravityVector = Vector2Scale(gravityVector, force * GetFrameTime());
-
-    // TODO: conversion from PositionComponent to Vector2 and vice-versa
-    Vector2 finalPosition =
-        Vector2Add({m_Position.x, m_Position.y}, gravityVector);
-    m_Position.x = finalPosition.x;
-    m_Position.y = finalPosition.y;
-
-    m_Position.x += m_Physics.velocity.x * 10.f * GetFrameTime();
-    m_Position.y += m_Physics.velocity.y * 10.f * GetFrameTime();
+    m_Position.x += m_FinalVector.x * GetFrameTime();
+    m_Position.y += m_FinalVector.y * GetFrameTime();
   }
 }
 
@@ -93,6 +102,14 @@ void SimpleEntity::draw() {
   int size = 3;
   if (m_IsStar) size = 20;
   DrawRectangle(this->m_Position.x, this->m_Position.y, size, size, m_Color);
+  DrawLineEx({m_Position.x, m_Position.y},
+             {m_Position.x + m_Physics.velocity.x,
+              m_Position.y + m_Physics.velocity.y},
+             1.0f, ORANGE);
+  DrawLineEx(
+      {m_Position.x, m_Position.y},
+      {m_Position.x + m_GravityVector.x, m_Position.y + m_GravityVector.y},
+      1.0f, BLUE);
 }
 
 PositionComponent SimpleEntity::getPosition() const { return m_Position; }

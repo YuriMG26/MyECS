@@ -74,6 +74,12 @@ void OOPGame::draw() {
   for (SimpleEntity& e : m_Entities) {
     e.draw();
   }
+
+  // TODO: remove debug bounds
+  Rectangle debugBounds = {0, 0, (float)GetScreenWidth(),
+                           (float)GetScreenHeight()};
+  DrawRectangleLinesEx(debugBounds, 2.0, RED);
+
   EndMode2D();
 
   draw_gui();
@@ -116,17 +122,17 @@ void OOPGame::draw_gui() {
 
   // CAMERA
   if (ImGui::TreeNode("Camera")) {
-    ImGui::DragFloat("CameraZoom", &m_Camera.zoom);
+    ImGui::DragFloat("Zoom", &m_Camera.zoom);
 
     float target[2] = {m_Camera.target.x, m_Camera.target.y};
-    ImGui::DragFloat2("CameraZoom", target);
+    ImGui::DragFloat2("Target", target);
     m_Camera.target.x = target[0];
-    m_Camera.target.x = target[1];
+    m_Camera.target.y = target[1];
+
+    ImGui::TreePop();
   }
 
   for (SimpleEntity& e : m_Entities) {
-    // TODO: move e.draw to a different place
-    // e.draw();
     auto position = e.getPosition();
     auto velocity = e.getPhysics().velocity;
     if (ImGui::TreeNode((void*)(intptr_t)i, "%s", e.getName().c_str())) {
@@ -135,9 +141,10 @@ void OOPGame::draw_gui() {
 
       float v[2] = {velocity.x, velocity.y};
       ImGui::DragFloat2("Velocity", v);
+      e.setVelocity({v[0], v[1]});
 
       OrbitalComponent orbital = e.getOrbital();
-      ImGui::DragFloat("Orbital mass", &orbital.mass);
+      ImGui::DragFloat("Orbital mass", &orbital.mass, 1000.0f);
       e.setOrbital(orbital);
 
       ImGui::TreePop();

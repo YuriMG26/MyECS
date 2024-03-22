@@ -17,7 +17,8 @@ project "MyECS"
   kind "ConsoleApp"
   symbols "On"
 
-  targetdir("bin/" .. outputdir .. "/%{prj.name}")
+  target_dir = "bin/" .. outputdir .. "/%{prj.name}"
+  targetdir(target_dir)
   objdir("bin-int/" .. outputdir .. "/%{prj.name}")
 
   files
@@ -45,6 +46,7 @@ project "MyECS"
     links { "winmm", "raylib", "opengl32", "msvcrt", "user32", "shell32", "gdi32" }
 
   filter "configurations:Debug"
+    debugdir(target_dir)
     symbols "On"
     linkoptions { '-g' }
 

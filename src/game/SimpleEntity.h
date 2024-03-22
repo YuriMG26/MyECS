@@ -44,12 +44,17 @@ class SimpleEntity : public GameObject {
 
   bool m_IsStar;
   Color m_Color;
-  OrbitalComponent m_Orbital;
-  PhysicsComponent m_Physics;
-  PositionComponent m_Position;
+  OrbitalComponent m_Orbital = {0};
+  PhysicsComponent m_Physics = {0};
+  PositionComponent m_Position = {0};
 
-  PositionComponent m_StarPosition;
-  OrbitalComponent m_StarOrbital;
+  PositionComponent m_StarPosition = {0};
+  OrbitalComponent m_StarOrbital = {0};
+
+  // Gravity simulation
+  Vector2 m_FinalVector = {0};
+  Vector2 m_GravityVector = {0};
+  float m_GravityIntensity = 0;
 
   void makeStar();
   void makePlanet();
