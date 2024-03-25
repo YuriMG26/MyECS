@@ -40,6 +40,11 @@ Application::~Application() {
 
 void Application::run() {
   while (!WindowShouldClose()) {
+    if (IsWindowResized()) {
+      m_Camera.offset.x = GetScreenWidth() / 2;
+      m_Camera.offset.y = GetScreenHeight() / 2;
+      Logger::log("Resized");
+    }
     this->update();
     this->draw();
   }

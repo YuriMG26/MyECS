@@ -1,8 +1,8 @@
-#include "SimpleEntity.h"
+#include "OrbitalEntity.h"
 
 #include <cstdint>
 
-void SimpleEntity::makeStar() {
+void OrbitalEntity::makeStar() {
   m_Color = {0, 255, 255, 255};
   m_Position = {(float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2};
   m_Physics.velocity = {0, 0};
@@ -10,7 +10,7 @@ void SimpleEntity::makeStar() {
   m_IsStar = true;
 }
 
-void SimpleEntity::makePlanet() {
+void OrbitalEntity::makePlanet() {
   std::random_device rd;
   std::mt19937_64 gen(rd());
 
@@ -47,7 +47,7 @@ void SimpleEntity::makePlanet() {
   m_Color = color;
 }
 
-SimpleEntity::SimpleEntity(const std::string& name, bool isStar) {
+OrbitalEntity::OrbitalEntity(const std::string& name, bool isStar) {
   m_Name = name;
   if (isStar) {
     makeStar();
@@ -56,17 +56,20 @@ SimpleEntity::SimpleEntity(const std::string& name, bool isStar) {
   }
 }
 
-SimpleEntity::~SimpleEntity() {}
+OrbitalEntity::~OrbitalEntity() {}
 
-void SimpleEntity::update(float delta) {
+void OrbitalEntity::update(float delta) {
   constexpr float gravitational = 6.6743e-11;
 
   if (!m_IsStar) {
     m_GravityVector.x = m_StarPosition.x - m_Position.x;
     m_GravityVector.y = m_StarPosition.y - m_Position.y;
     float radius = Vector2Length(m_GravityVector) / 10;
-    m_GravityIntensity = (100 / (radius / 2)) / 10;
-    m_GravityIntensity = Clamp(m_GravityIntensity, -18.8, 18.8);
+    m_GravityIntensity = (100 / (radius / 10));
+
+    constexpr float MAX_GRAVITY = 30.0f;
+
+    m_GravityIntensity = Clamp(m_GravityIntensity, -MAX_GRAVITY, MAX_GRAVITY);
     m_GravityVector =
         Vector2Scale(Vector2Normalize(m_GravityVector), m_GravityIntensity);
 
@@ -92,12 +95,12 @@ void SimpleEntity::update(float delta) {
 
     m_FinalVector = Vector2Add(planetVelocity, m_GravityVector);
 
-    m_Position.x += m_FinalVector.x * GetFrameTime();
-    m_Position.y += m_FinalVector.y * GetFrameTime();
+    m_Position.x += m_FinalVector.x * delta;
+    m_Position.y += m_FinalVector.y * delta;
   }
 }
 
-void SimpleEntity::draw() {
+void OrbitalEntity::draw() {
   // TODO: polymorphism for star
   int size = 3;
   if (m_IsStar) size = 20;
@@ -110,23 +113,27 @@ void SimpleEntity::draw() {
       {m_Position.x, m_Position.y},
       {m_Position.x + m_GravityVector.x, m_Position.y + m_GravityVector.y},
       1.0f, BLUE);
+
+  DrawLineEx({m_Position.x, m_Position.y},
+             {m_Position.x + m_FinalVector.x, m_Position.y + m_FinalVector.y},
+             1.0f, RED);
 }
 
-PositionComponent SimpleEntity::getPosition() const { return m_Position; }
+PositionComponent OrbitalEntity::getPosition() const { return m_Position; }
 
-void SimpleEntity::setPosition(Vector2 newPosition) {
+void OrbitalEntity::setPosition(Vector2 newPosition) {
   this->m_Position.x = newPosition.x;
   this->m_Position.y = newPosition.y;
 }
 
-PhysicsComponent SimpleEntity::getPhysics() const { return m_Physics; }
+PhysicsComponent OrbitalEntity::getPhysics() const { return m_Physics; }
 
-void SimpleEntity::setVelocity(Vector2 newVelocity) {
+void OrbitalEntity::setVelocity(Vector2 newVelocity) {
   this->m_Physics.velocity = newVelocity;
 }
 
-OrbitalComponent SimpleEntity::getOrbital() const { return m_Orbital; }
+OrbitalComponent OrbitalEntity::getOrbital() const { return m_Orbital; }
 
-void SimpleEntity::setOrbital(OrbitalComponent newOrbital) {
+void OrbitalEntity::setOrbital(OrbitalComponent newOrbital) {
   this->m_Orbital = newOrbital;
 }

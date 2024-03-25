@@ -2,15 +2,15 @@
 
 #include <random>
 
-#include "../components/OrbitalComponent.h"
-#include "../components/PhysicsComponent.h"
-#include "../components/PositionComponent.h"
-#include "../oop/GameObject.h"
+#include "../../components/OrbitalComponent.h"
+#include "../../components/PhysicsComponent.h"
+#include "../../components/PositionComponent.h"
+#include "../GameObject.h"
 
-class SimpleEntity : public GameObject {
+class OrbitalEntity : public GameObject {
  public:
-  SimpleEntity(const std::string& name, bool isStar);
-  ~SimpleEntity();
+  OrbitalEntity(const std::string& name, bool isStar);
+  ~OrbitalEntity();
 
   void update(float delta);
   void draw();

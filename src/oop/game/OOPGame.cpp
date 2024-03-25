@@ -14,7 +14,7 @@ OOPGame::OOPGame(int argc, char* argv[], const char* title, int width,
 
   // Creating star
   Logger::log("Creating entity %d", 0);
-  m_Entities.push_back(SimpleEntity("Star", true));
+  m_Entities.push_back(OrbitalEntity("Star", true));
 
   // Creating remainder entities
   for (std::size_t i = 0; i < m_EntityNum; ++i) {
@@ -22,7 +22,7 @@ OOPGame::OOPGame(int argc, char* argv[], const char* title, int width,
 
     char buffer[64];
     secure_sprintf(buffer, 64, "Planet #%d", i);
-    m_Entities.push_back(SimpleEntity(buffer, false));
+    m_Entities.push_back(OrbitalEntity(buffer, false));
   }
 
   m_StarEntity = 0;
@@ -32,18 +32,20 @@ OOPGame::~OOPGame() {
   // NOTE: Don't call CloseWindow :p
 }
 
+#if 0
 void OOPGame::run() {
-  while (not WindowShouldClose()) {
+  while (!WindowShouldClose()) {
     this->update();
     this->draw();
   }
 }
+#endif
 
 void OOPGame::update() {
   this->m_Delta = GetFrameTime();
-  const SimpleEntity& star = m_Entities.at(0);
+  const OrbitalEntity& star = m_Entities.at(0);
 
-  for (SimpleEntity& e : m_Entities) {
+  for (OrbitalEntity& e : m_Entities) {
     if (!e.isStar()) e.setStar(star.getPosition(), star.getOrbital());
     e.update(this->m_Delta);
   }
@@ -71,7 +73,7 @@ void OOPGame::draw() {
   ClearBackground(RAYWHITE);
 
   BeginMode2D(m_Camera);
-  for (SimpleEntity& e : m_Entities) {
+  for (OrbitalEntity& e : m_Entities) {
     e.draw();
   }
 
@@ -129,10 +131,15 @@ void OOPGame::draw_gui() {
     m_Camera.target.x = target[0];
     m_Camera.target.y = target[1];
 
+    float offset[2] = {m_Camera.offset.x, m_Camera.offset.y};
+    ImGui::DragFloat2("Offset", offset);
+    m_Camera.offset.x = offset[0];
+    m_Camera.offset.y = offset[1];
+
     ImGui::TreePop();
   }
 
-  for (SimpleEntity& e : m_Entities) {
+  for (OrbitalEntity& e : m_Entities) {
     auto position = e.getPosition();
     auto velocity = e.getPhysics().velocity;
     if (ImGui::TreeNode((void*)(intptr_t)i, "%s", e.getName().c_str())) {

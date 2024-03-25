@@ -3,8 +3,8 @@
 #include <cstddef>
 #include <sstream>
 
-#include "../Application.h"
-#include "SimpleEntity.h"
+#include "../../Application.h"
+#include "OrbitalEntity.h"
 
 class OOPGame : public Application {
  public:
@@ -12,7 +12,7 @@ class OOPGame : public Application {
           int width = 1280, int height = 720,
           bool lock_framerate_to_screen = false, int target_fps = 60);
   ~OOPGame();
-  void run();
+  //void run();
 
  private:
   void update();
@@ -20,7 +20,7 @@ class OOPGame : public Application {
   void draw_gui();
   void parseArgs(int argc, char* argv[]);
 
-  std::vector<SimpleEntity> m_Entities;
+  std::vector<OrbitalEntity> m_Entities;
   std::size_t m_EntityNum;
   std::size_t m_StarEntity;
 };
