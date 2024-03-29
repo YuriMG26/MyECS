@@ -7,7 +7,7 @@ void StyleImGui();
 Application::Application(int argc, char* argv[], const char* title, int width,
                          int height, bool lock_framerate_to_screen,
                          int target_fps)
-    : m_Title(title), m_Width(width), m_Height(height) {
+    : m_Title(title), m_Width(width), m_Height(height), m_ShouldClose(false) {
   this->parseArgs(argc, argv);
   Logger::log("Initializing window with dimensions %d x %d", width, height);
   InitWindow(width, height, title);
@@ -15,10 +15,11 @@ Application::Application(int argc, char* argv[], const char* title, int width,
   SetWindowState(FLAG_WINDOW_RESIZABLE);
   SetWindowState(FLAG_MSAA_4X_HINT);
 
+  m_FramerateTarget = target_fps;
   if (lock_framerate_to_screen) {
-    target_fps = GetMonitorRefreshRate(GetCurrentMonitor());
+    m_FramerateTarget = GetMonitorRefreshRate(GetCurrentMonitor());
   }
-  SetTargetFPS(target_fps);
+  SetTargetFPS(m_FramerateTarget);
 
   rlImGuiSetup(true);
 
@@ -39,12 +40,21 @@ Application::~Application() {
 }
 
 void Application::run() {
-  while (!WindowShouldClose()) {
+  static int previousFramerateTarget = 0;
+
+  while (!WindowShouldClose() && !m_ShouldClose) {
+    if (m_LockFramerate && previousFramerateTarget != m_FramerateTarget) {
+      SetTargetFPS(m_FramerateTarget);
+      previousFramerateTarget = m_FramerateTarget;
+    } else if (!m_LockFramerate)
+      SetTargetFPS(0);
+
     if (IsWindowResized()) {
-      m_Camera.offset.x = GetScreenWidth() / 2;
-      m_Camera.offset.y = GetScreenHeight() / 2;
+      m_Camera.offset.x = (float)GetScreenWidth() / 2;
+      m_Camera.offset.y = (float)GetScreenHeight() / 2;
       Logger::log("Resized");
     }
+
     this->update();
     this->draw();
   }

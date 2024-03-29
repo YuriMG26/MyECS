@@ -1,6 +1,6 @@
 #include "OrbitalEntity.h"
 
-#include <cstdint>
+#include <cmath>
 
 void OrbitalEntity::makeStar() {
   m_Color = {0, 255, 255, 255};
@@ -35,15 +35,10 @@ void OrbitalEntity::makePlanet() {
       0.0f, static_cast<float>(GetScreenHeight() - 20));
   position.y = posy(gen);
 
-  PhysicsComponent physics;
-  std::uniform_real_distribution<float> velx(-40.0f, +40.0f);
-  std::uniform_real_distribution<float> vely(-40.0f, +40.0f);
-  physics.velocity = {velx(gen), vely(gen)};
-
   m_IsStar = false;
   m_Position = {position.x, position.y};
   m_Orbital.mass = 10e3;
-  m_Physics = physics;
+  m_Physics = {0};
   m_Color = color;
 }
 
@@ -61,42 +56,39 @@ OrbitalEntity::~OrbitalEntity() {}
 void OrbitalEntity::update(float delta) {
   constexpr float gravitational = 6.6743e-11;
 
+  Vector2 differenceVector;
+
   if (!m_IsStar) {
-    m_GravityVector.x = m_StarPosition.x - m_Position.x;
-    m_GravityVector.y = m_StarPosition.y - m_Position.y;
-    float radius = Vector2Length(m_GravityVector) / 10;
-    m_GravityIntensity = (100 / (radius / 10));
+    differenceVector.x = m_Position.x - m_MousePosition.x;
+    differenceVector.y = m_Position.y - m_MousePosition.y;
 
-    constexpr float MAX_GRAVITY = 30.0f;
+    float dist = Vector2Distance({m_Position.x, m_Position.y}, m_MousePosition);
 
-    m_GravityIntensity = Clamp(m_GravityIntensity, -MAX_GRAVITY, MAX_GRAVITY);
-    m_GravityVector =
-        Vector2Scale(Vector2Normalize(m_GravityVector), m_GravityIntensity);
+    // TODO: separar isso em várias funções
+    if (dist == 0.0f) dist = 1;
+    Vector2 normal = {differenceVector.x * (1 / dist),
+                      differenceVector.y * (1 / dist)};
 
-    if (m_Position.x >= GetScreenWidth()) {
-      m_Position.x = GetScreenWidth();
-      m_Physics.velocity.x *= -1;
-    }
-    if (m_Position.x <= 0) {
-      m_Position.x = 0;
-      m_Physics.velocity.x *= -1;
-    }
+    // attract
+    dist = fmax(dist, 0.5);
+    m_Physics.velocity.x -= normal.x / dist;
+    m_Physics.velocity.y -= normal.y / dist;
 
-    if (m_Position.y >= GetScreenHeight()) {
-      m_Position.y = GetScreenHeight();
-      m_Physics.velocity.y *= -1;
-    }
-    if (m_Position.y <= 0) {
-      m_Position.y = 0;
-      m_Physics.velocity.y *= -1;
-    }
+    m_Physics.velocity.x *= 0.99;
+    m_Physics.velocity.y *= 0.99;
 
-    Vector2 planetVelocity = {m_Physics.velocity.x, m_Physics.velocity.y};
+    // m_FinalVector = planetVelocity;
+    m_Position.x += m_Physics.velocity.x * 100 * delta;
+    m_Position.y += m_Physics.velocity.y * 100 * delta;
 
-    m_FinalVector = Vector2Add(planetVelocity, m_GravityVector);
+    auto screenWidth = GetScreenWidth();
+    auto screenHeight = GetScreenHeight();
 
-    m_Position.x += m_FinalVector.x * delta;
-    m_Position.y += m_FinalVector.y * delta;
+    if (m_Position.x < 0) m_Position.x += screenWidth;
+    if (m_Position.x >= screenWidth) m_Position.x -= screenWidth;
+
+    if (m_Position.y < 0) m_Position.y += screenHeight;
+    if (m_Position.y >= screenHeight) m_Position.y -= screenHeight;
   }
 }
 
@@ -109,14 +101,6 @@ void OrbitalEntity::draw() {
              {m_Position.x + m_Physics.velocity.x,
               m_Position.y + m_Physics.velocity.y},
              1.0f, ORANGE);
-  DrawLineEx(
-      {m_Position.x, m_Position.y},
-      {m_Position.x + m_GravityVector.x, m_Position.y + m_GravityVector.y},
-      1.0f, BLUE);
-
-  DrawLineEx({m_Position.x, m_Position.y},
-             {m_Position.x + m_FinalVector.x, m_Position.y + m_FinalVector.y},
-             1.0f, RED);
 }
 
 PositionComponent OrbitalEntity::getPosition() const { return m_Position; }

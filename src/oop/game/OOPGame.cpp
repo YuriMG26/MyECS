@@ -1,6 +1,5 @@
 #include "OOPGame.h"
 
-#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 
@@ -8,7 +7,7 @@ OOPGame::OOPGame(int argc, char* argv[], const char* title, int width,
                  int height, bool lock_framerate_to_screen, int target_fps)
     : Application(argc, argv, title, width, height, lock_framerate_to_screen,
                   target_fps),
-      m_EntityNum(16) {
+      m_EntityNum(1024) {
   parseArgs(argc, argv);
   Logger::log("Initializing game with %zu entities", m_EntityNum);
 
@@ -46,7 +45,8 @@ void OOPGame::update() {
   const OrbitalEntity& star = m_Entities.at(0);
 
   for (OrbitalEntity& e : m_Entities) {
-    if (!e.isStar()) e.setStar(star.getPosition(), star.getOrbital());
+    e.setMousePosition(GetScreenToWorld2D(GetMousePosition(), m_Camera));
+    // if (!e.isStar()) e.setStar(star.getPosition(), star.getOrbital());
     e.update(this->m_Delta);
   }
 
@@ -85,8 +85,6 @@ void OOPGame::draw() {
   EndMode2D();
 
   draw_gui();
-  DrawFPS(10, 10);
-
   rlImGuiEnd();
   EndDrawing();
 }
@@ -115,7 +113,21 @@ void OOPGame::parseArgs(int argc, char* argv[]) {
 }
 
 void OOPGame::draw_gui() {
+  if (ImGui::BeginMainMenuBar()) {
+    if (ImGui::BeginMenu(ICON_FK_COG "Sandbox")) {
+      ImGui::Checkbox("Lock Framerate", &m_LockFramerate);
+      ImGui::DragInt("Framerate Target", &m_FramerateTarget);
+
+      if (ImGui::MenuItem("Exit", "ESC")) m_ShouldClose = true;
+      ImGui::EndMenu();
+    }
+    ImGui::SameLine(ImGui::GetWindowWidth() - 40);
+    if (ImGui::Button(ICON_FK_TIMES)) m_ShouldClose = true;
+    ImGui::EndMainMenuBar();
+  }
+
   ImGui::Begin("Debug info");
+  ImGui::Text("%d", GetFPS());
   ImGui::Text("Mousepos = (%f, %f)", GetMousePosition().x,
               GetMousePosition().y);
 

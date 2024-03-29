@@ -17,6 +17,10 @@ class OrbitalEntity : public GameObject {
 
   const std::string& getName() const { return m_Name; }
 
+  void setMousePosition(Vector2 mousePosition) {
+    m_MousePosition = mousePosition;
+  }
+
   Color getColor(void) const { return m_Color; }
   void setColor(Color newColor);
 
@@ -33,12 +37,6 @@ class OrbitalEntity : public GameObject {
 
   void setEntityAsStar() { this->m_IsStar = true; }
 
-  void setStar(const PositionComponent& position,
-               const OrbitalComponent& orbital) {
-    m_StarPosition = position;
-    m_StarOrbital = orbital;
-  }
-
  private:
   std::string m_Name;
 
@@ -48,13 +46,7 @@ class OrbitalEntity : public GameObject {
   PhysicsComponent m_Physics = {0};
   PositionComponent m_Position = {0};
 
-  PositionComponent m_StarPosition = {0};
-  OrbitalComponent m_StarOrbital = {0};
-
-  // Gravity simulation
-  Vector2 m_FinalVector = {0};
-  Vector2 m_GravityVector = {0};
-  float m_GravityIntensity = 0;
+  Vector2 m_MousePosition = {0};
 
   void makeStar();
   void makePlanet();

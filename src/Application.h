@@ -14,6 +14,8 @@
 #include "../vendor/raylib/include/rlImGui.h"
 //
 #include "../vendor/raylib/include/ImGuiUtils.h"
+//
+#include "../vendor/raylib/include/extras/IconsForkAwesome.h"
 #include "Logger.h"
 
 class Application {
@@ -32,6 +34,9 @@ class Application {
   virtual void draw();
   virtual void parseArgs(int argc, char* argv[]);
 
+  int m_FramerateTarget = 60;
+  bool m_LockFramerate;
+  bool m_ShouldClose;
   float m_Delta;
   int m_Width;
   int m_Height;
