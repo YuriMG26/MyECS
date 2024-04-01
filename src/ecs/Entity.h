@@ -33,7 +33,7 @@ class Entity {
   template <typename Type>
   void RemoveComponent() {
     if (HasComponent<Type>())
-      Logger::error("%s: entity does not have component.", __PRETTY_FUNCTION__);
+      Logger::error("entity does not have component.");
     m_Scene->m_Registry.remove<Type>(m_Entity);
   }
 

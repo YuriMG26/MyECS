@@ -4,7 +4,7 @@
 
 #include "Components.h"
 
-GameState::GameState(int entity_num) {
+GameState::GameState(int entity_num) : m_ShouldClose(0) {
   m_Camera = {{(float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2},
               {0, 0},
               0.0,

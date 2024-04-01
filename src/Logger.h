@@ -17,8 +17,8 @@
 
 namespace Logger {
 void log(const char *format, ...);
-void error(const char *format);
-void warning(const char *format);
+void error(const char *format, ...);
+void warning(const char *format, ...);
 void memory(const char *format, ...);
 
 };  // namespace Logger
