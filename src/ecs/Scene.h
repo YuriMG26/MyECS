@@ -14,13 +14,13 @@ class Scene {
   Scene();
   Scene(const std::string& sceneName);
 
-  void update(float delta, Camera2D camera);
+  virtual void update(float delta, Camera2D camera);
 
   const entt::registry& Reg() const { return m_Registry; }
   Entity CreateEntity(const std::string& name = std::string());
   void DestroyEntity(Entity entity);
 
- private:
+ protected:
   std::string m_SceneName;
   entt::registry m_Registry;
 

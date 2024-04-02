@@ -20,7 +20,7 @@ class Entity {
   Type &AddComponent(Args &&...args) {
     if (HasComponent<Type>())
       // TODO: Arrumar logger
-      Logger::error("entity already has component.");
+      Logger::error("%s: entity already has component", FUNCTION_SIGNATURE);
     return m_Scene->m_Registry.emplace<Type>(m_Entity,
                                              std::forward<Args>(args)...);
   }
@@ -33,7 +33,7 @@ class Entity {
   template <typename Type>
   void RemoveComponent() {
     if (HasComponent<Type>())
-      Logger::error("%s: entity does not have component.", __PRETTY_FUNCTION__);
+      Logger::error("%s: entity does not have component.", FUNCTION_SIGNATURE);
     m_Scene->m_Registry.remove<Type>(m_Entity);
   }
 

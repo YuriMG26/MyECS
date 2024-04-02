@@ -3,6 +3,7 @@
 #include <random>
 
 #include "Components.h"
+#include "particles/ParticleScene.h"
 
 GameState::GameState(int entity_num) {
   m_Camera = {{(float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2},
@@ -10,7 +11,7 @@ GameState::GameState(int entity_num) {
               0.0,
               1.0};
 
-  m_CurrentScene = new Scene("Scene 1");
+  m_CurrentScene = new ParticleScene("Scene 1");
 
   std::random_device rd;   // obtain a random number from hardware
   std::mt19937 gen(rd());  // seed the generator

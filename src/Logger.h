@@ -15,10 +15,16 @@
 #define secure_sprintf(...) snprintf(__VA_ARGS__);
 #endif
 
+#ifdef _MSC_VER
+#define FUNCTION_SIGNATURE __FUNCSIG__
+#else
+#define FUNCTION_FUNCTION_SIGNATURE __PRETTY_FUNCTION__
+#endif
+
 namespace Logger {
 void log(const char *format, ...);
-void error(const char *format);
-void warning(const char *format);
+void error(const char *format, ...);
+void warning(const char *format, ...);
 void memory(const char *format, ...);
 
 };  // namespace Logger
