@@ -1,39 +1,15 @@
 #include "GameState.h"
 
-#include <random>
-
 #include "Components.h"
 #include "particles/ParticleScene.h"
 
-GameState::GameState(int entity_num) {
+GameState::GameState(uint32_t entity_num) {
   m_Camera = {{(float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2},
               {0, 0},
               0.0,
               1.0};
 
-  m_CurrentScene = new ParticleScene("Scene 1");
-
-  std::random_device rd;   // obtain a random number from hardware
-  std::mt19937 gen(rd());  // seed the generator
-  std::uniform_int_distribution<> distrX(0, GetScreenWidth());
-  std::uniform_int_distribution<> distrY(0, GetScreenHeight());
-  std::uniform_int_distribution<> distrColor(0, 255);
-
-  for (uint32_t i = 0; i < entity_num; i++) {
-    char buffer[128] = {};
-    secure_sprintf(buffer, 128, "Square %d", i);
-    auto e = m_CurrentScene->CreateEntity(buffer);
-    auto& particle = e.AddComponent<ParticleTag>();
-    particle.color.r = distrColor(gen);
-    particle.color.g = distrColor(gen);
-    particle.color.b = distrColor(gen);
-    particle.color.a = 255;
-
-    e.AddComponent<PhysicsComponent>();
-
-    e.GetComponent<TransformComponent>().position.x = distrX(gen);
-    e.GetComponent<TransformComponent>().position.y = distrY(gen);
-  }
+  m_CurrentScene = new ParticleScene("Scene 1", entity_num);
 }
 
 void GameState::tick() {

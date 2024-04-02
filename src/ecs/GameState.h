@@ -9,7 +9,7 @@
 
 class GameState {
  public:
-  GameState(int entity_num);
+  GameState(uint32_t entity_num);
   ~GameState() { delete m_CurrentScene; };
 
   void tick();

@@ -1,10 +1,19 @@
 #include "ParticleScene.h"
 
+#include <random>
+
 #include "../Components.h"
+#include "../Entity.h"
 
-ParticleScene::ParticleScene() : Scene() {}
+ParticleScene::ParticleScene(uint32_t entity_num)
+    : Scene(), m_EntityNum(entity_num) {
+  InitParticleScene();
+}
 
-ParticleScene::ParticleScene(const std::string &sceneName) : Scene(sceneName) {}
+ParticleScene::ParticleScene(const std::string &sceneName, uint32_t entity_num)
+    : Scene(sceneName), m_EntityNum(entity_num) {
+  InitParticleScene();
+}
 
 void ParticleScene::update(float delta, Camera2D camera) {
   Vector2 mousePosition = GetScreenToWorld2D(GetMousePosition(), camera);
@@ -51,5 +60,29 @@ void ParticleScene::update(float delta, Camera2D camera) {
 
     DrawRectangle(transform.position.x, transform.position.y, 3, 3,
                   particle.color);
+  }
+}
+
+void ParticleScene::InitParticleScene() {
+  std::random_device rd;   // obtain a random number from hardware
+  std::mt19937 gen(rd());  // seed the generator
+  std::uniform_int_distribution<> distrX(0, GetScreenWidth());
+  std::uniform_int_distribution<> distrY(0, GetScreenHeight());
+  std::uniform_int_distribution<> distrColor(0, 255);
+
+  for (uint32_t i = 0; i < m_EntityNum; i++) {
+    char buffer[128] = {};
+    secure_sprintf(buffer, 128, "Square %d", i);
+    auto e = CreateEntity(buffer);
+    auto &particle = e.AddComponent<ParticleTag>();
+    particle.color.r = distrColor(gen);
+    particle.color.g = distrColor(gen);
+    particle.color.b = distrColor(gen);
+    particle.color.a = 255;
+
+    e.AddComponent<PhysicsComponent>();
+
+    e.GetComponent<TransformComponent>().position.x = distrX(gen);
+    e.GetComponent<TransformComponent>().position.y = distrY(gen);
   }
 }
