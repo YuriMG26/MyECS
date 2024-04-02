@@ -5,7 +5,7 @@ void StyleImGui();
 
 ECSGame::ECSGame(int argc, char *argv[], int width, int height,
                  const char *title, bool matchFpsToRefreshRate)
-    : m_ScreenWidth(width), m_ScreenHeight(height) {
+    : m_ScreenWidth(width), m_ScreenHeight(height), m_EntityNum(256) {
   InitWindow(width, height, title);
   this->parseArgs(argc, argv);
 
