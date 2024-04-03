@@ -4,13 +4,20 @@
 
 #include "GameState.h"
 
-class ECSGame {
+//
+#include "../Application.h"
+
+class ECSGame : public Application {
  public:
-  ECSGame(int argc, char* argv[], int width, int height, const char* title,
-          bool lockFPS);
+  ECSGame(int argc, char* argv[], const char* title = "Application",
+          int width = 1280, int height = 720,
+          bool lock_framerate_to_screen = false, int target_fps = 60);
   ~ECSGame();
 
-  void run();
+  // void run();
+
+  void update();
+  void draw();
 
  private:
   GameState* m_GameState;
@@ -30,4 +37,6 @@ class ECSGame {
   bool m_Fullscreen = false;
 
   int m_TargetFPS;
+
+  bool m_DrawGui = true;
 };

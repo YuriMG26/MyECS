@@ -12,7 +12,7 @@ class OOPGame : public Application {
           int width = 1280, int height = 720,
           bool lock_framerate_to_screen = false, int target_fps = 60);
   ~OOPGame();
-  //void run();
+  // void run();
 
  private:
   void update();
@@ -23,4 +23,6 @@ class OOPGame : public Application {
   std::vector<OrbitalEntity> m_Entities;
   std::size_t m_EntityNum;
   std::size_t m_StarEntity;
+
+  bool m_DrawGui = true;
 };

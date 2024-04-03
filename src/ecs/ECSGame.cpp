@@ -3,48 +3,59 @@
 #include <sstream>
 void StyleImGui();
 
-ECSGame::ECSGame(int argc, char *argv[], int width, int height,
-                 const char *title, bool matchFpsToRefreshRate)
-    : m_ScreenWidth(width), m_ScreenHeight(height), m_EntityNum(256) {
-  InitWindow(width, height, title);
+ECSGame::ECSGame(int argc, char* argv[], const char* title, int width,
+                 int height, bool lock_framerate_to_screen, int target_fps)
+    : Application(argc, argv, title, width, height, lock_framerate_to_screen,
+                  target_fps),
+      m_ScreenWidth(width),
+      m_ScreenHeight(height),
+      m_EntityNum(256) {
   this->parseArgs(argc, argv);
-
-  int currentMonitor = GetCurrentMonitor();
-
-  // SetWindowState(FLAG_WINDOW_UNDECORATED);
-  SetWindowState(FLAG_WINDOW_RESIZABLE);
-  SetWindowState(FLAG_MSAA_4X_HINT);
-
-  if (m_Fullscreen) ToggleFullscreen();
-
   m_GameState = new GameState(m_EntityNum);
-
-  if (matchFpsToRefreshRate) {
-    int refreshRate = GetMonitorRefreshRate(currentMonitor);
-    SetTargetFPS(refreshRate);
-  }
-
-  rlImGuiSetup(true);
-  StyleImGui();
 }
 
 ECSGame::~ECSGame() { delete m_GameState; }
 
-void ECSGame::run() {
-  while (!WindowShouldClose() && !m_GameState->ShouldClose()) {
-    BeginDrawing();
-    rlImGuiBegin();
-    ClearBackground(WHITE);
-    m_GameState->tick();
-    m_GameState->update();
-    m_GameState->editor();
-    m_GameState->render();
-    rlImGuiEnd();
-    EndDrawing();
-  }
+// void ECSGame::run() {
+// while (!WindowShouldClose() && !m_GameState->ShouldClose()) {
+//   // TODO: desacoplar isso
+//
+//   BeginDrawing();
+//   rlImGuiBegin();
+//   ClearBackground(WHITE);
+//   m_GameState->tick();
+//   m_GameState->update();
+//
+//   m_GameState->render();
+//   if (m_DrawGui)
+//     m_GameState->editor();
+//   else
+//     DrawFPS(10, 10);
+//   rlImGuiEnd();
+//   EndDrawing();
+// }
+// }
+
+void ECSGame::update() {
+  if (IsKeyPressed(KEY_F1)) m_DrawGui = !m_DrawGui;
+  m_GameState->tick();
+  m_GameState->update();
 }
 
-void ECSGame::parseArgs(int argc, char *argv[]) {
+void ECSGame::draw() {
+  BeginDrawing();
+  rlImGuiBegin();
+  ClearBackground(WHITE);
+  m_GameState->render();
+  if (m_DrawGui)
+    m_GameState->editor();
+  else
+    DrawFPS(10, 10);
+  rlImGuiEnd();
+  EndDrawing();
+}
+
+void ECSGame::parseArgs(int argc, char* argv[]) {
   if (argc > 64) {
     Logger::error("Invalid number of arguments! (over 64)");
   }

@@ -31,16 +31,12 @@ OOPGame::~OOPGame() {
   // NOTE: Don't call CloseWindow :p
 }
 
-#if 0
-void OOPGame::run() {
-  while (!WindowShouldClose()) {
-    this->update();
-    this->draw();
-  }
-}
-#endif
-
 void OOPGame::update() {
+  // process key info
+  if (IsKeyPressed(KEY_F1)) {
+    m_DrawGui = !m_DrawGui;
+  }
+
   this->m_Delta = GetFrameTime();
   const OrbitalEntity& star = m_Entities.at(0);
 
@@ -84,7 +80,10 @@ void OOPGame::draw() {
 
   EndMode2D();
 
-  draw_gui();
+  if (m_DrawGui)
+    draw_gui();
+  else
+    DrawFPS(10, 10);
   rlImGuiEnd();
   EndDrawing();
 }
@@ -126,49 +125,53 @@ void OOPGame::draw_gui() {
     ImGui::EndMainMenuBar();
   }
 
-  ImGui::Begin("Debug info");
-  ImGui::Text("%d", GetFPS());
-  ImGui::Text("Mousepos = (%f, %f)", GetMousePosition().x,
-              GetMousePosition().y);
+  ImGui::Begin("Debug info", NULL, ImGuiWindowFlags_NoTitleBar);
+  if (ImGui::CollapsingHeader(ICON_FK_MICROCHIP " Engine Core Info")) {
+    ImGui::Text("%d", GetFPS());
+    ImGui::Text("Mousepos = (%f, %f)", GetMousePosition().x,
+                GetMousePosition().y);
 
-  ImGui::Text("MouseDelta = (%f, %f)", GetMouseDelta().x, GetMouseDelta().y);
-  int i = 0;
+    ImGui::Text("MouseDelta = (%f, %f)", GetMouseDelta().x, GetMouseDelta().y);
 
-  // CAMERA
-  if (ImGui::TreeNode("Camera")) {
-    ImGui::DragFloat("Zoom", &m_Camera.zoom);
+    // CAMERA
+    if (ImGui::TreeNode("Camera")) {
+      ImGui::DragFloat("Zoom", &m_Camera.zoom);
 
-    float target[2] = {m_Camera.target.x, m_Camera.target.y};
-    ImGui::DragFloat2("Target", target);
-    m_Camera.target.x = target[0];
-    m_Camera.target.y = target[1];
+      float target[2] = {m_Camera.target.x, m_Camera.target.y};
+      ImGui::DragFloat2("Target", target);
+      m_Camera.target.x = target[0];
+      m_Camera.target.y = target[1];
 
-    float offset[2] = {m_Camera.offset.x, m_Camera.offset.y};
-    ImGui::DragFloat2("Offset", offset);
-    m_Camera.offset.x = offset[0];
-    m_Camera.offset.y = offset[1];
-
-    ImGui::TreePop();
-  }
-
-  for (OrbitalEntity& e : m_Entities) {
-    auto position = e.getPosition();
-    auto velocity = e.getPhysics().velocity;
-    if (ImGui::TreeNode((void*)(intptr_t)i, "%s", e.getName().c_str())) {
-      ImGui::Text("Position: (%f, %f)", position.x, position.y);
-      ImGui::Text("Velocity: (%f, %f)", velocity.x, velocity.y);
-
-      float v[2] = {velocity.x, velocity.y};
-      ImGui::DragFloat2("Velocity", v);
-      e.setVelocity({v[0], v[1]});
-
-      OrbitalComponent orbital = e.getOrbital();
-      ImGui::DragFloat("Orbital mass", &orbital.mass, 1000.0f);
-      e.setOrbital(orbital);
+      float offset[2] = {m_Camera.offset.x, m_Camera.offset.y};
+      ImGui::DragFloat2("Offset", offset);
+      m_Camera.offset.x = offset[0];
+      m_Camera.offset.y = offset[1];
 
       ImGui::TreePop();
     }
-    ++i;
+  }
+
+  if (ImGui::CollapsingHeader(ICON_FK_USERS " Entities")) {
+    int i = 0;
+    for (OrbitalEntity& e : m_Entities) {
+      auto position = e.getPosition();
+      auto velocity = e.getPhysics().velocity;
+      if (ImGui::TreeNode((void*)(intptr_t)i, "%s", e.getName().c_str())) {
+        ImGui::Text("Position: (%f, %f)", position.x, position.y);
+        ImGui::Text("Velocity: (%f, %f)", velocity.x, velocity.y);
+
+        float v[2] = {velocity.x, velocity.y};
+        ImGui::DragFloat2("Velocity", v);
+        e.setVelocity({v[0], v[1]});
+
+        OrbitalComponent orbital = e.getOrbital();
+        ImGui::DragFloat("Orbital mass", &orbital.mass, 1000.0f);
+        e.setOrbital(orbital);
+
+        ImGui::TreePop();
+      }
+      ++i;
+    }
   }
   ImGui::End();
 }

@@ -37,6 +37,9 @@ project "MyECS"
   {
     "Vendor/raylib/lib/windows/"
   }
+
+  filter { "action:not xcode4" }
+    disablewarnings { "format-security" }
   
   filter { "action:vs2022" }
     toolset "msc"

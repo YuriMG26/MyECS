@@ -19,7 +19,8 @@ Application::Application(int argc, char* argv[], const char* title, int width,
   if (lock_framerate_to_screen) {
     m_FramerateTarget = GetMonitorRefreshRate(GetCurrentMonitor());
   }
-  SetTargetFPS(m_FramerateTarget);
+  // TODO: Arrumar isso
+  SetTargetFPS(0);
 
   rlImGuiSetup(true);
 
@@ -43,12 +44,6 @@ void Application::run() {
   static int previousFramerateTarget = 0;
 
   while (!WindowShouldClose() && !m_ShouldClose) {
-    if (m_LockFramerate && previousFramerateTarget != m_FramerateTarget) {
-      SetTargetFPS(m_FramerateTarget);
-      previousFramerateTarget = m_FramerateTarget;
-    } else if (!m_LockFramerate)
-      SetTargetFPS(0);
-
     if (IsWindowResized()) {
       m_Camera.offset.x = (float)GetScreenWidth() / 2;
       m_Camera.offset.y = (float)GetScreenHeight() / 2;
@@ -67,10 +62,7 @@ void Application::setTitle(const char* title) {
   this->m_Title = title;
 }
 
-void Application::update() {
-  // TODO: update
-  // TODO: fixed update?
-}
+void Application::update() {}
 
 void Application::draw() {
   BeginDrawing();
