@@ -40,12 +40,11 @@ project "MyECS"
     }
 
   filter { "system:linux" }
-    links { "raylib" }
+    links { "raylib:static" }
     libdirs
     {
       "vendor/raylib/lib/linux/amd64/"
     }
-    linkoptions { "-R ../../../vendor/raylib/lib/linux/amd64/" }
 
   -- filter { "system: linux", "architecture:x86_64" }
 
