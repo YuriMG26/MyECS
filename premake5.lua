@@ -33,10 +33,21 @@ project "MyECS"
     "Vendor/entt/"
   }
 
-  libdirs
-  {
-    "Vendor/raylib/lib/windows/"
-  }
+  filter { "system:windows" } 
+    libdirs
+    {
+      "Vendor/raylib/lib/windows/"
+    }
+
+  filter { "system:linux" }
+    links { "raylib" }
+    libdirs
+    {
+      "vendor/raylib/lib/linux/amd64/"
+    }
+    linkoptions { "-R ../../../vendor/raylib/lib/linux/amd64/" }
+
+  -- filter { "system: linux", "architecture:x86_64" }
 
   filter { "action:not xcode4" }
     disablewarnings { "format-security" }

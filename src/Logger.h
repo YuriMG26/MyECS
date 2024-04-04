@@ -18,7 +18,7 @@
 #ifdef _MSC_VER
 #define FUNCTION_SIGNATURE __FUNCSIG__
 #else
-#define FUNCTION_FUNCTION_SIGNATURE __PRETTY_FUNCTION__
+#define FUNCTION_SIGNATURE __PRETTY_FUNCTION__
 #endif
 
 namespace Logger {

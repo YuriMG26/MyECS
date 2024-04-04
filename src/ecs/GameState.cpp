@@ -3,6 +3,13 @@
 #include "Components.h"
 #include "particles/ParticleScene.h"
 
+// TODO: file for utils
+#if _WIN32
+#define secure_strcpy(...) strcpy_s(__VA_ARGS__);
+#else
+#define secure_strcpy(buffer, size, dest) strncpy(buffer, dest, size);
+#endif
+
 GameState::GameState(uint32_t entity_num) {
   m_Camera = {{(float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2},
               {0, 0},
@@ -150,7 +157,8 @@ void GameState::DrawComponents(Entity entity) {
     auto& tag = entity.GetComponent<TagComponent>().tag;
     char buffer[256];
     memset(buffer, 0, sizeof(buffer));
-    strcpy_s(buffer, 256, tag.c_str());
+
+    secure_strcpy(buffer, 256, tag.c_str());
     if (ImGui::InputText("Tag", buffer, sizeof(buffer))) {
       tag = std::string(buffer);
     }
