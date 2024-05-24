@@ -11,12 +11,14 @@ OOPGame::OOPGame(int argc, char* argv[], const char* title, int width,
   parseArgs(argc, argv);
   Logger::log("Initializing game with %zu entities", m_EntityNum);
 
+  m_Entities.reserve(m_EntityNum);
+
   // Creating star
   Logger::log("Creating entity %d", 0);
   m_Entities.push_back(OrbitalEntity("Star", true));
 
   // Creating remainder entities
-  for (std::size_t i = 0; i < m_EntityNum; ++i) {
+  for (std::size_t i = 0; i < m_EntityNum - 1; ++i) {
     Logger::log("Creating entity %d", i);
 
     char buffer[64];
@@ -36,55 +38,67 @@ void OOPGame::update() {
   if (IsKeyPressed(KEY_F1)) {
     m_DrawGui = !m_DrawGui;
   }
+  if (IsKeyPressed(KEY_F2)) {
+    m_ShouldDraw = !m_ShouldDraw;
+  }
 
   this->m_Delta = GetFrameTime();
-  const OrbitalEntity& star = m_Entities.at(0);
 
   for (OrbitalEntity& e : m_Entities) {
     e.setMousePosition(GetScreenToWorld2D(GetMousePosition(), m_Camera));
-    // if (!e.isStar()) e.setStar(star.getPosition(), star.getOrbital());
     e.update(this->m_Delta);
   }
 
-  Vector2 mouseDelta = GetMouseDelta();
+  if (!m_PureCPUMode) {
+    Vector2 mouseDelta = GetMouseDelta();
 
-  if (!ImGui::GetIO().WantCaptureMouse) {
-    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-      Vector2 cameraTargetGlobal =
+    if (!ImGui::GetIO().WantCaptureMouse) {
+      if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        Vector2 cameraTargetGlobal =
           GetWorldToScreen2D(m_Camera.target, m_Camera);
-      cameraTargetGlobal.x -= mouseDelta.x;
-      cameraTargetGlobal.y -= mouseDelta.y;
-      m_Camera.target = GetScreenToWorld2D(cameraTargetGlobal, m_Camera);
+        cameraTargetGlobal.x -= mouseDelta.x;
+        cameraTargetGlobal.y -= mouseDelta.y;
+        m_Camera.target = GetScreenToWorld2D(cameraTargetGlobal, m_Camera);
+      }
+      m_Camera.zoom += GetMouseWheelMove() * 0.1f;
+      m_Camera.zoom = Clamp(m_Camera.zoom, 0.1, 20.0);
     }
-    m_Camera.zoom += GetMouseWheelMove() * 0.1f;
-    m_Camera.zoom = Clamp(m_Camera.zoom, 0.1, 20.0);
   }
 }
 
+// TODO: better functions for dispatching between normal-mode and purecpu-mode
 void OOPGame::draw() {
   BeginDrawing();
 
-  rlImGuiBegin();
+  if(m_DrawGui)
+    rlImGuiBegin();
 
   ClearBackground(RAYWHITE);
 
-  BeginMode2D(m_Camera);
-  for (OrbitalEntity& e : m_Entities) {
-    e.draw();
+  if (!m_PureCPUMode) {
+    BeginMode2D(m_Camera);
+    for (OrbitalEntity& e : m_Entities) {
+      e.draw();
+    }
   }
 
-  // TODO: remove debug bounds
+  // TODO: remove debug bounds?
   Rectangle debugBounds = {0, 0, (float)GetScreenWidth(),
                            (float)GetScreenHeight()};
   DrawRectangleLinesEx(debugBounds, 2.0, RED);
 
-  EndMode2D();
+  if (!m_PureCPUMode)
+    EndMode2D();
+  else
+    DrawText("PURE CPU MODE", GetScreenWidth() / 2 - (MeasureText("PURE CPU MODE", 40) / 2), GetScreenHeight() / 2, 40, BLACK);
 
   if (m_DrawGui)
     draw_gui();
   else
     DrawFPS(10, 10);
-  rlImGuiEnd();
+
+  if (m_DrawGui)
+    rlImGuiEnd();
   EndDrawing();
 }
 
@@ -107,6 +121,11 @@ void OOPGame::parseArgs(int argc, char* argv[]) {
       m_EntityNum = entity_num;
       Logger::log("Successfully initializing game with %zu entities.",
                   m_EntityNum);
+    }
+    else if(argument == "-purecpu") {
+      m_ShouldDraw = false;
+      m_DrawGui = false;
+      m_PureCPUMode = true;
     }
   }
 }

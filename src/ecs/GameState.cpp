@@ -30,23 +30,27 @@ void GameState::tick() {
 }
 
 void GameState::update() {
-  if (!ImGui::GetIO().WantCaptureMouse) {
-    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-      Vector2 cameraTargetGlobal =
+  if(!m_PureCPUMode) {
+    if (!ImGui::GetIO().WantCaptureMouse) {
+      if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        Vector2 cameraTargetGlobal =
           GetWorldToScreen2D(m_Camera.target, m_Camera);
-      cameraTargetGlobal.x -= m_MouseDelta.x;
-      cameraTargetGlobal.y -= m_MouseDelta.y;
-      m_Camera.target = GetScreenToWorld2D(cameraTargetGlobal, m_Camera);
+        cameraTargetGlobal.x -= m_MouseDelta.x;
+        cameraTargetGlobal.y -= m_MouseDelta.y;
+        m_Camera.target = GetScreenToWorld2D(cameraTargetGlobal, m_Camera);
+      }
+      m_Camera.zoom += GetMouseWheelMove() * 0.1f;
+      m_Camera.zoom = std::clamp<float>(m_Camera.zoom, 0.1, 20.0);
     }
-    m_Camera.zoom += GetMouseWheelMove() * 0.1f;
-    m_Camera.zoom = std::clamp<float>(m_Camera.zoom, 0.1, 20.0);
   }
 }
 
 void GameState::render() {
-  BeginMode2D(m_Camera);
+  if(!m_PureCPUMode)
+    BeginMode2D(m_Camera);
   m_CurrentScene->update(m_FrameTime, m_Camera);
-  EndMode2D();
+  if(!m_PureCPUMode)
+    EndMode2D();
 }
 
 void GameState::editor() {
@@ -183,4 +187,9 @@ void GameState::DrawComponents(Entity entity) {
 
     ImGui::TreePop();
 #endif
+}
+
+void GameState::pureCpuMode(bool pureCpuMode) { 
+  m_PureCPUMode = pureCpuMode;
+  m_CurrentScene->PureCPUMode();
 }

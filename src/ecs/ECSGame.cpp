@@ -16,26 +16,6 @@ ECSGame::ECSGame(int argc, char* argv[], const char* title, int width,
 
 ECSGame::~ECSGame() { delete m_GameState; }
 
-// void ECSGame::run() {
-// while (!WindowShouldClose() && !m_GameState->ShouldClose()) {
-//   // TODO: desacoplar isso
-//
-//   BeginDrawing();
-//   rlImGuiBegin();
-//   ClearBackground(WHITE);
-//   m_GameState->tick();
-//   m_GameState->update();
-//
-//   m_GameState->render();
-//   if (m_DrawGui)
-//     m_GameState->editor();
-//   else
-//     DrawFPS(10, 10);
-//   rlImGuiEnd();
-//   EndDrawing();
-// }
-// }
-
 void ECSGame::update() {
   if (IsKeyPressed(KEY_F1)) m_DrawGui = !m_DrawGui;
   m_GameState->tick();
@@ -44,14 +24,18 @@ void ECSGame::update() {
 
 void ECSGame::draw() {
   BeginDrawing();
-  rlImGuiBegin();
+  if (m_DrawGui)
+    rlImGuiBegin();
   ClearBackground(WHITE);
   m_GameState->render();
   if (m_DrawGui)
     m_GameState->editor();
   else
     DrawFPS(10, 10);
-  rlImGuiEnd();
+  if (m_DrawGui)
+    rlImGuiEnd();
+  else
+    DrawText("PURE CPU MODE", GetScreenWidth() / 2 - (MeasureText("PURE CPU MODE", 40) / 2), GetScreenHeight() / 2, 40, BLACK);
   EndDrawing();
 }
 
@@ -74,6 +58,12 @@ void ECSGame::parseArgs(int argc, char* argv[]) {
       m_EntityNum = entity_num;
       Logger::log("Successfully initializing game with %zu entities.",
                   m_EntityNum);
+    }
+    else if (argument == "-purecpu") {
+      m_ShouldDraw = false;
+      m_DrawGui = false;
+      m_PureCPUMode = true;
+      m_GameState->pureCpuMode(true);
     }
   }
 }

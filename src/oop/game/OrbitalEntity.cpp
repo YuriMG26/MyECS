@@ -93,14 +93,12 @@ void OrbitalEntity::update(float delta) {
 }
 
 void OrbitalEntity::draw() {
-  // TODO: polymorphism for star
-  int size = 3;
-  if (m_IsStar) size = 20;
+  constexpr int size = 3;
   DrawRectangle(this->m_Position.x, this->m_Position.y, size, size, m_Color);
-  DrawLineEx({m_Position.x, m_Position.y},
-             {m_Position.x + m_Physics.velocity.x,
-              m_Position.y + m_Physics.velocity.y},
-             1.0f, ORANGE);
+  // DrawLineEx({m_Position.x, m_Position.y},
+  //            {m_Position.x + m_Physics.velocity.x,
+  //             m_Position.y + m_Physics.velocity.y},
+  //            1.0f, ORANGE);
 }
 
 PositionComponent OrbitalEntity::getPosition() const { return m_Position; }

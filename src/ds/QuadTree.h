@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstdint>
+#include <list>
 #include <memory>
 #include <utility>
 #include <vector>
@@ -64,6 +65,19 @@ class QuadTree {
           return;
         }
       }
+    }
+
+    m_pItems.push_back({rect, item});
+  }
+
+  std::list<T> Search(const Rectangle& rect) const {
+    std::list<T> listItems;
+    Search(rect, listItems);
+    return listItems;
+  }
+
+  void Search(const Rectangle& rect, std::list<T>& listItems) const {
+    for (const auto& p : m_pItems) {
     }
   }
 

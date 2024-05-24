@@ -12,7 +12,7 @@ void operator delete(void *memory, size_t size) {
   free(memory);
 }
 
-#define ECS 1
+#define OOP 1
 
 int main(int argc, char *argv[]) {
 #ifdef OOP

@@ -39,4 +39,6 @@ class ECSGame : public Application {
   int m_TargetFPS;
 
   bool m_DrawGui = true;
+  bool m_ShouldDraw = true;
+  bool m_PureCPUMode = false;
 };

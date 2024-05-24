@@ -58,8 +58,9 @@ void ParticleScene::update(float delta, Camera2D camera) {
     if (transform.position.y >= screenHeight)
       transform.position.y -= screenHeight;
 
-    DrawRectangle(transform.position.x, transform.position.y, 3, 3,
-                  particle.color);
+    if(!m_PureCPUMode)
+      DrawRectangle(transform.position.x, transform.position.y, 3, 3,
+                    particle.color);
   }
 }
 
