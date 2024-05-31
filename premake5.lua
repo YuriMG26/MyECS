@@ -64,4 +64,4 @@ project "MyECS"
     linkoptions { '-g' }
 
   filter "configurations:Release"
-    optimize "On"
+    optimize "Speed"

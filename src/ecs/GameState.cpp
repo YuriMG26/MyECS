@@ -191,5 +191,5 @@ void GameState::DrawComponents(Entity entity) {
 
 void GameState::pureCpuMode(bool pureCpuMode) { 
   m_PureCPUMode = pureCpuMode;
-  m_CurrentScene->PureCPUMode();
+  m_CurrentScene->PureCPUMode(pureCpuMode);
 }

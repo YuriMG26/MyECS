@@ -15,7 +15,7 @@ OOPGame::OOPGame(int argc, char* argv[], const char* title, int width,
 
   // Creating star
   Logger::log("Creating entity %d", 0);
-  m_Entities.push_back(OrbitalEntity("Star", true));
+  m_Entities.push_back(ParticleEntity("Star", true));
 
   // Creating remainder entities
   for (std::size_t i = 0; i < m_EntityNum - 1; ++i) {
@@ -23,7 +23,7 @@ OOPGame::OOPGame(int argc, char* argv[], const char* title, int width,
 
     char buffer[64];
     secure_sprintf(buffer, 64, "Planet #%d", i);
-    m_Entities.push_back(OrbitalEntity(buffer, false));
+    m_Entities.push_back(ParticleEntity(buffer, false));
   }
 
   m_StarEntity = 0;
@@ -44,7 +44,7 @@ void OOPGame::update() {
 
   this->m_Delta = GetFrameTime();
 
-  for (OrbitalEntity& e : m_Entities) {
+  for (ParticleEntity& e : m_Entities) {
     e.setMousePosition(GetScreenToWorld2D(GetMousePosition(), m_Camera));
     e.update(this->m_Delta);
   }
@@ -77,7 +77,7 @@ void OOPGame::draw() {
 
   if (!m_PureCPUMode) {
     BeginMode2D(m_Camera);
-    for (OrbitalEntity& e : m_Entities) {
+    for (ParticleEntity& e : m_Entities) {
       e.draw();
     }
   }
@@ -172,7 +172,7 @@ void OOPGame::draw_gui() {
 
   if (ImGui::CollapsingHeader(ICON_FK_USERS " Entities")) {
     int i = 0;
-    for (OrbitalEntity& e : m_Entities) {
+    for (ParticleEntity& e : m_Entities) {
       auto position = e.getPosition();
       auto velocity = e.getPhysics().velocity;
       if (ImGui::TreeNode((void*)(intptr_t)i, "%s", e.getName().c_str())) {
@@ -182,10 +182,6 @@ void OOPGame::draw_gui() {
         float v[2] = {velocity.x, velocity.y};
         ImGui::DragFloat2("Velocity", v);
         e.setVelocity({v[0], v[1]});
-
-        OrbitalComponent orbital = e.getOrbital();
-        ImGui::DragFloat("Orbital mass", &orbital.mass, 1000.0f);
-        e.setOrbital(orbital);
 
         ImGui::TreePop();
       }

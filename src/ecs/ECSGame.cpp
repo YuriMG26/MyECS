@@ -12,6 +12,7 @@ ECSGame::ECSGame(int argc, char* argv[], const char* title, int width,
       m_EntityNum(256) {
   this->parseArgs(argc, argv);
   m_GameState = new GameState(m_EntityNum);
+  m_GameState->pureCpuMode(this->m_PureCPUMode);
 }
 
 ECSGame::~ECSGame() { delete m_GameState; }
@@ -34,7 +35,7 @@ void ECSGame::draw() {
     DrawFPS(10, 10);
   if (m_DrawGui)
     rlImGuiEnd();
-  else
+  if (m_PureCPUMode)
     DrawText("PURE CPU MODE", GetScreenWidth() / 2 - (MeasureText("PURE CPU MODE", 40) / 2), GetScreenHeight() / 2, 40, BLACK);
   EndDrawing();
 }

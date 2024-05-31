@@ -4,7 +4,7 @@
 #include <sstream>
 
 #include "../../Application.h"
-#include "OrbitalEntity.h"
+#include "ParticleEntity.h"
 
 class OOPGame : public Application {
  public:
@@ -19,7 +19,7 @@ class OOPGame : public Application {
   void draw_gui();
   void parseArgs(int argc, char* argv[]);
 
-  std::vector<OrbitalEntity> m_Entities;
+  std::vector<ParticleEntity> m_Entities;
   std::size_t m_EntityNum;
   std::size_t m_StarEntity;
 

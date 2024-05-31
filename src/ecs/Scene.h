@@ -20,7 +20,7 @@ class Scene {
   Entity CreateEntity(const std::string& name = std::string());
   void DestroyEntity(Entity entity);
 
-  inline void PureCPUMode(void) { m_PureCPUMode = true; }
+  inline void PureCPUMode(bool cpumode) { m_PureCPUMode = cpumode; }
   bool PureCPUMode(void) const { return m_PureCPUMode; }
 
  protected:

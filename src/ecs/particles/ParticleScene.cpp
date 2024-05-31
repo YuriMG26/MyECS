@@ -36,7 +36,6 @@ void ParticleScene::update(float delta, Camera2D camera) {
     Vector2 normal = {differenceVector.x * (1 / dist),
                       differenceVector.y * (1 / dist)};
 
-    // attract
     dist = fmax(dist, 0.5);
     physics.velocity.x -= normal.x / dist;
     physics.velocity.y -= normal.y / dist;

@@ -12,16 +12,14 @@ void operator delete(void *memory, size_t size) {
   free(memory);
 }
 
-#define OOP 1
+#define OOP 0
 
 int main(int argc, char *argv[]) {
-#ifdef OOP
+#if OOP
   OOPGame *app = new OOPGame(argc, argv, "Game sandbox", 1280, 720, true);
   app->run();
   delete app;
-#endif
-
-#ifdef ECS
+#else
   ECSGame *app = new ECSGame(argc, argv, "ECS Game", 1280, 720, false);
   app->run();
   delete app;
