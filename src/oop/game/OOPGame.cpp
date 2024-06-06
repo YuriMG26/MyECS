@@ -14,12 +14,12 @@ OOPGame::OOPGame(int argc, char* argv[], const char* title, int width,
   m_Entities.reserve(m_EntityNum);
 
   // Creating star
-  Logger::log("Creating entity %d", 0);
-  m_Entities.push_back(ParticleEntity("Star", true));
+  // Logger::log("Creating entity %d", 0);
+  // m_Entities.push_back(ParticleEntity("Star", true));
 
   // Creating remainder entities
-  for (std::size_t i = 0; i < m_EntityNum - 1; ++i) {
-    Logger::log("Creating entity %d", i);
+  for (std::size_t i = 0; i < m_EntityNum; ++i) {
+    // Logger::log("Creating entity %d", i);
 
     char buffer[64];
     secure_sprintf(buffer, 64, "Planet #%d", i);
@@ -35,6 +35,7 @@ OOPGame::~OOPGame() {
 
 void OOPGame::update() {
   // process key info
+  #if 0
   if (IsKeyPressed(KEY_F1)) {
     m_DrawGui = !m_DrawGui;
   }
@@ -43,12 +44,17 @@ void OOPGame::update() {
   }
 
   this->m_Delta = GetFrameTime();
+  #endif
+
+  Vector2 mousePosition = GetMousePosition();
+  mousePosition = GetScreenToWorld2D(mousePosition, m_Camera);
 
   for (ParticleEntity& e : m_Entities) {
-    e.setMousePosition(GetScreenToWorld2D(GetMousePosition(), m_Camera));
+    e.setMousePosition(mousePosition);
     e.update(this->m_Delta);
   }
 
+  #if 0
   if (!m_PureCPUMode) {
     Vector2 mouseDelta = GetMouseDelta();
 
@@ -64,6 +70,7 @@ void OOPGame::update() {
       m_Camera.zoom = Clamp(m_Camera.zoom, 0.1, 20.0);
     }
   }
+  #endif
 }
 
 // TODO: better functions for dispatching between normal-mode and purecpu-mode
@@ -83,14 +90,16 @@ void OOPGame::draw() {
   }
 
   // TODO: remove debug bounds?
+  #if 0
   Rectangle debugBounds = {0, 0, (float)GetScreenWidth(),
                            (float)GetScreenHeight()};
   DrawRectangleLinesEx(debugBounds, 2.0, RED);
+  #endif
 
   if (!m_PureCPUMode)
     EndMode2D();
-  else
-    DrawText("PURE CPU MODE", GetScreenWidth() / 2 - (MeasureText("PURE CPU MODE", 40) / 2), GetScreenHeight() / 2, 40, BLACK);
+  // else
+    // DrawText("PURE CPU MODE", GetScreenWidth() / 2 - (MeasureText("PURE CPU MODE", 40) / 2), GetScreenHeight() / 2, 40, BLACK);
 
   if (m_DrawGui)
     draw_gui();

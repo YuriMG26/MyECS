@@ -2,6 +2,8 @@
 #include "../../Logger.h"
 #include "../Scene.h"
 
+#include "../Components.h"
+
 class ParticleScene : public Scene {
  public:
   ParticleScene(unsigned int entity_num);

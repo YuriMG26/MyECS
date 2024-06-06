@@ -20,15 +20,15 @@ class Scene {
   Entity CreateEntity(const std::string& name = std::string());
   void DestroyEntity(Entity entity);
 
-  inline void PureCPUMode(bool cpumode) { m_PureCPUMode = cpumode; }
-  bool PureCPUMode(void) const { return m_PureCPUMode; }
+  // inline void PureCPUMode(bool cpumode) { m_PureCPUMode = cpumode; }
+  // bool PureCPUMode(void) const { return m_PureCPUMode; }
 
  protected:
   std::string m_SceneName;
   entt::registry m_Registry;
 
   // TODO: make pure cpu mode togglable
-  bool m_PureCPUMode = true;
+  // bool m_PureCPUMode = true;
 
   friend class Entity;
   friend class GameState;

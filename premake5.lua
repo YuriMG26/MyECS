@@ -61,6 +61,7 @@ project "MyECS"
   filter "configurations:Debug"
     debugdir(target_dir)
     symbols "On"
+    optimize "Speed"
     linkoptions { '-g' }
 
   filter "configurations:Release"

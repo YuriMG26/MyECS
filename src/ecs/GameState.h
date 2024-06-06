@@ -18,8 +18,8 @@ class GameState {
 
   bool ShouldClose() const { return m_ShouldClose; }
 
-  void pureCpuMode(bool pureCpuMode);
-  bool pureCpuMode(void) const { return m_PureCPUMode; }
+  // void pureCpuMode(bool pureCpuMode);
+  // bool pureCpuMode(void) const { return m_PureCPUMode; }
 
   // TODO: Standardize the editor for both games
   void editor();
@@ -29,7 +29,7 @@ class GameState {
   void DrawComponents(Entity entity);
 
   bool m_ShouldClose = false;
-  bool m_PureCPUMode = false;
+  // bool m_PureCPUMode = false;
 
   int m_ScreenX, m_ScreenY;
   int m_ScreenWidth, m_ScreenHeight;

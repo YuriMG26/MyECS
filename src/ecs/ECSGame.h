@@ -40,5 +40,5 @@ class ECSGame : public Application {
 
   bool m_DrawGui = true;
   bool m_ShouldDraw = true;
-  bool m_PureCPUMode = false;
+  // bool m_PureCPUMode = false;
 };

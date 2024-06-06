@@ -20,7 +20,7 @@ Application::Application(int argc, char* argv[], const char* title, int width,
     m_FramerateTarget = GetMonitorRefreshRate(GetCurrentMonitor());
   }
   // TODO: Arrumar isso
-  SetTargetFPS(0);
+  //SetTargetFPS(0);
 
   rlImGuiSetup(true);
 
@@ -44,11 +44,13 @@ void Application::run() {
   static int previousFramerateTarget = 0;
 
   while (!WindowShouldClose() && !m_ShouldClose) {
+    #if 0
     if (IsWindowResized()) {
       m_Camera.offset.x = (float)GetScreenWidth() / 2;
       m_Camera.offset.y = (float)GetScreenHeight() / 2;
       Logger::log("Resized");
     }
+    #endif
 
     this->update();
     this->draw();

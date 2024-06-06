@@ -2,7 +2,6 @@
 
 #include <random>
 
-#include "../Components.h"
 #include "../Entity.h"
 
 ParticleScene::ParticleScene(uint32_t entity_num)
@@ -57,9 +56,11 @@ void ParticleScene::update(float delta, Camera2D camera) {
     if (transform.position.y >= screenHeight)
       transform.position.y -= screenHeight;
 
+    #if 0
     if(!m_PureCPUMode)
       DrawRectangle(transform.position.x, transform.position.y, 3, 3,
                     particle.color);
+   #endif
   }
 }
 

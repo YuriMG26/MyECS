@@ -15,6 +15,11 @@ void ParticleEntity::update(float delta) {
   differenceVector.x = m_Position.x - m_MousePosition.x;
   differenceVector.y = m_Position.y - m_MousePosition.y;
 
+
+  // differenceVector.x = m_Position.x - 0;
+  // differenceVector.y = m_Position.y - 0;
+
+
   float dist = Vector2Distance({m_Position.x, m_Position.y}, m_MousePosition);
 
   if (dist == 0.0f) dist = 1;

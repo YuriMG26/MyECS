@@ -11,6 +11,7 @@ using ColorComponent = Color;
 
 class ParticleEntity : public GameObject {
  public:
+
   ParticleEntity(const std::string& name, bool isStar);
   ~ParticleEntity();
 
