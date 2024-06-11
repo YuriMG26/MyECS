@@ -47,10 +47,14 @@ void GameState::update() {
 
 void GameState::render() {
   // if(!m_PureCPUMode)
+#if 0
     BeginMode2D(m_Camera);
+#endif
   m_CurrentScene->update(m_FrameTime, m_Camera);
   // if(!m_PureCPUMode)
+#if 0
     EndMode2D();
+#endif
 }
 
 void GameState::editor() {

@@ -2,17 +2,32 @@
 
 #include <random>
 
+#include "../../../vendor/raylib/include/raylib.h"
+#include "../../../vendor/raylib/include/raymath.h"
 
-#include "../../components/PhysicsComponent.h"
-#include "../../components/PositionComponent.h"
+// #include "../../components/PhysicsComponent.h"
+// #include "../../components/PositionComponent.h"
+//
+#include "PositionComponent.h"
 #include "../GameObject.h"
 
-using ColorComponent = Color;
+class ColorComponent : public IComponent
+{
+public:
+  ColorComponent(int r, int g, int b) { color.r = r; color.g = g; color.b = b; color.a =  255; }
+  void operator=(const Color& other) { color.r = other.r; color.g = other.g; color.b = other.b; color.a = other.a; }
+  void update(float delta) {}
+  Color getColor() { return color ;}
+  void setColor(Color color) { color = color; }
+protected:
+  Color color;
+};
 
 class ParticleEntity : public GameObject {
  public:
 
-  ParticleEntity(const std::string& name, bool isStar);
+  ParticleEntity(const std::string& name, int x, int y, int r, int g, int b);
+
   ~ParticleEntity();
 
   void update(float delta);
@@ -24,7 +39,7 @@ class ParticleEntity : public GameObject {
     m_MousePosition = mousePosition;
   }
 
-  Color getColor(void) const { return m_Color; }
+  Color getColor(void) { return m_Color->getColor(); }
   void setColor(Color newColor);
 
   PositionComponent getPosition() const;
@@ -36,9 +51,10 @@ class ParticleEntity : public GameObject {
  private:
   std::string m_Name;
 
-  ColorComponent m_Color;
-  PhysicsComponent m_Physics = {0};
-  PositionComponent m_Position = {0};
+  std::vector<IComponent*> m_Components;
+  ColorComponent    *m_Color;
+  PhysicsComponent  *m_Physics;
+  PositionComponent *m_Position;
 
   Vector2 m_MousePosition = {0};
 

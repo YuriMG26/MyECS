@@ -12,6 +12,7 @@ ECSGame::ECSGame(int argc, char* argv[], const char* title, int width,
       m_EntityNum(256) {
   this->parseArgs(argc, argv);
   m_GameState = new GameState(m_EntityNum);
+  Logger::log("Initting with %d entitites", m_EntityNum);
   //m_GameState->pureCpuMode(this->m_PureCPUMode);
 }
 

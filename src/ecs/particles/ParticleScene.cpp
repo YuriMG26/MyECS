@@ -15,7 +15,8 @@ ParticleScene::ParticleScene(const std::string &sceneName, uint32_t entity_num)
 }
 
 void ParticleScene::update(float delta, Camera2D camera) {
-  Vector2 mousePosition = GetScreenToWorld2D(GetMousePosition(), camera);
+  // Vector2 mousePosition = GetScreenToWorld2D(GetMousePosition(), camera);
+  Vector2 mousePosition = GetMousePosition();
   Vector2 differenceVector = {0};
 
   auto group =
@@ -58,9 +59,9 @@ void ParticleScene::update(float delta, Camera2D camera) {
 
     #if 0
     if(!m_PureCPUMode)
-      DrawRectangle(transform.position.x, transform.position.y, 3, 3,
-                    particle.color);
    #endif
+    DrawRectangle(transform.position.x, transform.position.y, 3, 3,
+                    particle.color);
   }
 }
 

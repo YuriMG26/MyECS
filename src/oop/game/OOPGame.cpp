@@ -18,12 +18,25 @@ OOPGame::OOPGame(int argc, char* argv[], const char* title, int width,
   // m_Entities.push_back(ParticleEntity("Star", true));
 
   // Creating remainder entities
+  std::random_device rd;   // obtain a random number from hardware
+  std::mt19937 gen(rd());  // seed the generator
+  std::uniform_int_distribution<> distrX(0, GetScreenWidth());
+  std::uniform_int_distribution<> distrY(0, GetScreenHeight());
+  std::uniform_int_distribution<> distrColor(0, 255);
+  
   for (std::size_t i = 0; i < m_EntityNum; ++i) {
     // Logger::log("Creating entity %d", i);
+    int r = distrColor(gen);
+    int g = distrColor(gen);
+    int b = distrColor(gen);
+    int a = 255;
+
+    auto x = distrX(gen); 
+    auto y = distrY(gen);
 
     char buffer[64];
     secure_sprintf(buffer, 64, "Planet #%d", i);
-    m_Entities.push_back(ParticleEntity(buffer, false));
+    m_Entities.push_back(ParticleEntity(buffer, x, y, r, g, b));
   }
 
   m_StarEntity = 0;
@@ -35,7 +48,6 @@ OOPGame::~OOPGame() {
 
 void OOPGame::update() {
   // process key info
-  #if 0
   if (IsKeyPressed(KEY_F1)) {
     m_DrawGui = !m_DrawGui;
   }
@@ -44,10 +56,9 @@ void OOPGame::update() {
   }
 
   this->m_Delta = GetFrameTime();
-  #endif
 
   Vector2 mousePosition = GetMousePosition();
-  mousePosition = GetScreenToWorld2D(mousePosition, m_Camera);
+  // mousePosition = GetScreenToWorld2D(mousePosition, m_Camera);
 
   for (ParticleEntity& e : m_Entities) {
     e.setMousePosition(mousePosition);
@@ -75,6 +86,8 @@ void OOPGame::update() {
 
 // TODO: better functions for dispatching between normal-mode and purecpu-mode
 void OOPGame::draw() {
+  // TODO: remove hardcode
+  m_PureCPUMode = false;
   BeginDrawing();
 
   if(m_DrawGui)
@@ -83,7 +96,9 @@ void OOPGame::draw() {
   ClearBackground(RAYWHITE);
 
   if (!m_PureCPUMode) {
+#if 0
     BeginMode2D(m_Camera);
+#endif
     for (ParticleEntity& e : m_Entities) {
       e.draw();
     }
@@ -96,8 +111,10 @@ void OOPGame::draw() {
   DrawRectangleLinesEx(debugBounds, 2.0, RED);
   #endif
 
+#if 0
   if (!m_PureCPUMode)
     EndMode2D();
+#endif
   // else
     // DrawText("PURE CPU MODE", GetScreenWidth() / 2 - (MeasureText("PURE CPU MODE", 40) / 2), GetScreenHeight() / 2, 40, BLACK);
 
@@ -182,10 +199,10 @@ void OOPGame::draw_gui() {
   if (ImGui::CollapsingHeader(ICON_FK_USERS " Entities")) {
     int i = 0;
     for (ParticleEntity& e : m_Entities) {
-      auto position = e.getPosition();
-      auto velocity = e.getPhysics().velocity;
+      auto position = e.getPosition().getPosition();
+      auto velocity = e.getPhysics().getVelocity();
       if (ImGui::TreeNode((void*)(intptr_t)i, "%s", e.getName().c_str())) {
-        ImGui::Text("Position: (%f, %f)", position.x, position.y);
+        ImGui::Text("Position: (%f, %f)", position[0], position[1]);
         ImGui::Text("Velocity: (%f, %f)", velocity.x, velocity.y);
 
         float v[2] = {velocity.x, velocity.y};

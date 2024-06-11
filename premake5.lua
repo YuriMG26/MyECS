@@ -48,8 +48,8 @@ project "MyECS"
 
   -- filter { "system: linux", "architecture:x86_64" }
 
-  filter { "action:not xcode4" }
-    disablewarnings { "format-security" }
+  -- filter { "action:not xcode4" }
+  --   disablewarnings { "format-security" }
   
   filter { "action:vs2022" }
     toolset "msc"
@@ -61,7 +61,7 @@ project "MyECS"
   filter "configurations:Debug"
     debugdir(target_dir)
     symbols "On"
-    optimize "Speed"
+    -- optimize "Speed"
     linkoptions { '-g' }
 
   filter "configurations:Release"
